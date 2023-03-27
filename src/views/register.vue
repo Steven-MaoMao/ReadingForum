@@ -3,12 +3,12 @@
         <el-col>
             <div class="main">
                 <el-row justify="center">
-                    <el-col :span="20">
+                    <el-col :span="24">
                         <span class="title">注册</span>
                     </el-col>
                 </el-row>
                 <el-row justify="center">
-                    <el-col :span="20">
+                    <el-col :span="24">
                         <el-form ref="registerFormRef" :model="registerForm" :rules="registerFormRules"
                             label-position="left" label-width="80px">
                             <el-form-item label="账号" prop="username">
@@ -52,7 +52,7 @@ export default {
             },
             registerFormRules: {
                 username: [{ required: true, pattern: /^[a-zA-Z][a-zA-Z0-9_]{5,17}$/, message: '6-18位字母、数字、下划线', trigger: 'blur' }],
-                password: [{ required: true, pattern: /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$)([^\u4e00-\u9fa5\s]){6,18}$/, message: '6-18位字母、数字、符号，至少包含两种', trigger: 'blur' }],
+                password: [{ required: true, pattern: /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$)([^\u4e00-\u9fa5\s]){6,18}$/, message: '6-18位字母、数字、符号，至少两种', trigger: 'blur' }],
                 repassword: [{
                     required: true,
                     validator: (rule, value, callback) => {
