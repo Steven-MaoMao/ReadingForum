@@ -79,6 +79,7 @@ export default {
                         message: res.message,
                         type: 'success'
                     })
+                    this.$router.push('/login')
                 } else {
                     ElMessage({
                         message: res.message,

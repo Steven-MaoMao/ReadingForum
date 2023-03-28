@@ -18,8 +18,8 @@ app.config.globalProperties.$md5 = md5
 
 app.config.globalProperties.$http = axios
 axios.defaults.baseURL = 'http://localhost:8080'
-axios.interceptors.request.use(config=>{
-    config.headers['token'] = VueCookies.get('token')
+axios.interceptors.request.use(config => {
+    config.headers['token'] = JSON.parse(sessionStorage.getItem('token'))
     return config
 })
 
