@@ -42,13 +42,13 @@ export default {
     data() {
         return {
             registerForm: {
-                username: '',
-                password: '',
-                repassword: ''
+                username: null,
+                password: null,
+                repassword: null
             },
             data: {
-                username: '',
-                password: ''
+                username: null,
+                password: null
             },
             registerFormRules: {
                 username: [{ required: true, pattern: /^[a-zA-Z][a-zA-Z0-9_]{5,17}$/, message: '6-18位字母、数字、下划线', trigger: 'blur' }],

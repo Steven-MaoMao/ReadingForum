@@ -73,16 +73,58 @@
             <span style="font-size: xx-small;">头像文件格式限制.png .jpeg .jpg .gif，大小限制2M</span>
         </div>
     </el-dialog>
-    <el-dialog v-model="changeUserInfoDialogVisible" title="修改信息">
+    <el-dialog v-model="changeUserInfoDialogVisible" title="修改信息" width="40%"
+        :before-close="beforeChangeUserInfoDialogClose">
         <div class="dialog">
-            <el-form>
-
-            </el-form>
+            <el-row justify="center" style="width: 70%;">
+                <el-col :span="24">
+                    <el-form ref="changeUserInfoFormRef" :model="userInfo" :rules="changeUserInfoRules"
+                        label-position="left" label-width="100px">
+                        <el-form-item label="用户名" prop="username">
+                            <el-input v-model="userInfo.username" disabled />
+                        </el-form-item>
+                        <el-form-item label="昵称" prop="nickname">
+                            <el-input v-model="userInfo.nickname" />
+                        </el-form-item>
+                        <el-form-item label="性别" prop="gender">
+                            <el-radio-group v-model="userInfo.gender">
+                                <el-radio label="男">男</el-radio>
+                                <el-radio label="女">女</el-radio>
+                                <el-radio :label=null>保密</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                        <el-form-item label="生日" prop="birthday">
+                            <el-date-picker v-model="userInfo.birthday" value-format="YYYY-MM-DD"></el-date-picker>
+                        </el-form-item>
+                        <el-form-item label="手机" prop="phone">
+                            <el-input v-model="userInfo.phone" />
+                        </el-form-item>
+                        <el-form-item label="邮箱" prop="email">
+                            <el-input v-model="userInfo.email" />
+                        </el-form-item>
+                        <el-form-item label="地址" prop="location">
+                            <el-input v-model="userInfo.location" />
+                        </el-form-item>
+                        <el-form-item label="个性签名" prop="bio">
+                            <el-input v-model="userInfo.bio" type="textarea" maxlength="80" show-word-limit />
+                        </el-form-item>
+                    </el-form>
+                </el-col>
+            </el-row>
+            <el-row justify="center" style="width: 100%;">
+                <el-col :span="7" style="display: flex; justify-content: center;">
+                    <el-button type="primary" @click="onChangeUserInfo">确认</el-button>
+                </el-col>
+                <el-col :span="7" style="display: flex; justify-content: center;">
+                    <el-button @click="onCancelChangeUserInfo">取消</el-button>
+                </el-col>
+            </el-row>
         </div>
     </el-dialog>
-    <el-dialog v-model="changePasswordDialogVisible" title="修改密码" width="30%">
+    <el-dialog v-model="changePasswordDialogVisible" title="修改密码" width="30%"
+        :before-close="beforeChangePasswordDialogClose">
         <div class="dialog">
-            <el-row justify="center">
+            <el-row justify="center" style="width: 70%;">
                 <el-col :span="24">
                     <el-form ref="changePasswordFormRef" :model="changePasswordForm" :rules="changePasswordRules"
                         label-position="left" label-width="100px">
@@ -117,19 +159,23 @@ export default {
     data() {
         return {
             userInfo: {
-                username: '',
-                nickname: '',
-                gender: '',
-                birthday: '',
-                phone: '',
-                email: '',
-                location: '',
-                bio: ''
+                username: null,
+                nickname: null,
+                gender: null,
+                birthday: null,
+                phone: null,
+                email: null,
+                location: null,
+                bio: null
+            },
+            changeUserInfoRules: {
+                phone: [{ pattern: /^\d{11}$/, message: '手机号格式不正确', trigger: 'blur' }],
+                email: [{ pattern: /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/, message: 'Email格式不正确', trigger: 'blur' }],
             },
             changePasswordForm: {
-                oldPassword: '',
-                newPassword: '',
-                reNewPassword: ''
+                oldPassword: null,
+                newPassword: null,
+                reNewPassword: null
             },
             changePasswordRules: {
                 oldPassword: [{ required: true, pattern: /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$)([^\u4e00-\u9fa5\s]){6,18}$/, message: '6-18位字母、数字、符号，至少两种', trigger: 'blur' }],
@@ -147,13 +193,13 @@ export default {
                 }]
             },
             headers: {
-                token: '',
+                token: null,
             },
             activeName: 'favourite',
             changeAvatarDialogVisible: false,
             changeUserInfoDialogVisible: false,
             changePasswordDialogVisible: false,
-            avatarUrl: ''
+            avatarUrl: null
         }
     },
     mounted() {
@@ -217,6 +263,51 @@ export default {
             }
             return true
         },
+        onChangeUserInfo() {
+            this.$refs.changeUserInfoFormRef.validate(async (valid) => {
+                if (!valid) return
+                if (this.userInfo.nickname === '') this.userInfo.nickname = null
+                if (this.userInfo.phone === '') this.userInfo.phone = null
+                if (this.userInfo.email === '') this.userInfo.email = null
+                if (this.userInfo.location === '') this.userInfo.location = null
+                if (this.userInfo.bio === '') this.userInfo.bio = null
+                const { data: res } = await this.$http.put('/user/updatePersonalInfo', this.userInfo)
+                if (res.code === 1) {
+                    ElMessage({
+                        message: res.message,
+                        type: 'success'
+                    })
+                    sessionStorage.setItem('nickname', JSON.stringify(this.userInfo.nickname))
+                    sessionStorage.setItem('gender', JSON.stringify(this.userInfo.gender))
+                    sessionStorage.setItem('birthday', JSON.stringify(this.userInfo.birthday))
+                    sessionStorage.setItem('phone', JSON.stringify(this.userInfo.phone))
+                    sessionStorage.setItem('email', JSON.stringify(this.userInfo.email))
+                    sessionStorage.setItem('location', JSON.stringify(this.userInfo.location))
+                    sessionStorage.setItem('bio', JSON.stringify(this.userInfo.bio))
+                    this.changeUserInfoDialogVisible = false
+                } else {
+                    ElMessage({
+                        message: res.message,
+                        type: 'error'
+                    })
+                    this.onCancelChangeUserInfo()
+                }
+            })
+        },
+        onCancelChangeUserInfo() {
+            this.userInfo.avatar = JSON.parse(sessionStorage.getItem('avatar'))
+            this.userInfo.nickname = JSON.parse(sessionStorage.getItem('nickname'))
+            this.userInfo.gender = JSON.parse(sessionStorage.getItem('gender'))
+            this.userInfo.birthday = JSON.parse(sessionStorage.getItem('birthday'))
+            this.userInfo.phone = JSON.parse(sessionStorage.getItem('phone'))
+            this.userInfo.email = JSON.parse(sessionStorage.getItem('email'))
+            this.userInfo.location = JSON.parse(sessionStorage.getItem('location'))
+            this.userInfo.bio = JSON.parse(sessionStorage.getItem('bio'))
+        },
+        beforeChangeUserInfoDialogClose(done) {
+            this.onCancelChangeUserInfo()
+            done()
+        },
         onChangePassword() {
             this.$refs.changePasswordFormRef.validate(async (valid) => {
                 if (!valid) return
@@ -224,7 +315,6 @@ export default {
                 this.changePasswordForm.newPassword = this.$md5(this.changePasswordForm.newPassword)
                 this.changePasswordForm.reNewPassword = null
                 const { data: res } = await this.$http.put('/user/updatePassword', this.changePasswordForm)
-                console.log(res)
                 if (res.code === 1) {
                     ElMessage({
                         message: res.message,
@@ -242,6 +332,10 @@ export default {
         },
         onCancelChangePassword() {
             this.$refs.changePasswordFormRef.resetFields()
+        },
+        beforeChangePasswordDialogClose(done) {
+            this.onCancelChangePassword()
+            done()
         },
         logout() {
             this.$cookies.remove('token')

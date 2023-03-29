@@ -49,8 +49,8 @@ export default {
   data() {
     return {
       loginForm: {
-        username: '',
-        password: ''
+        username: null,
+        password: null
       },
       loginFormRules: {
         username: [{ required: true, pattern: /^[a-zA-Z][a-zA-Z0-9_]{5,17}$/, message: '6-18位字母、数字、下划线', trigger: 'blur' }],

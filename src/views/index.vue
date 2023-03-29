@@ -7,8 +7,8 @@ export default {
     data() {
         return {
             data: {
-                oldPassword: '',
-                newPassword: ''
+                oldPassword: null,
+                newPassword: null
             }
         }
     },
