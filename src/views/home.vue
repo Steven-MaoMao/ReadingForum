@@ -51,10 +51,20 @@
             </el-row>
             <el-row class="block">
                 <el-col>
-                    <el-tabs v-model="activeName" stretch>
-                        <el-tab-pane label="我的收藏" name="favourite">User</el-tab-pane>
-                        <el-tab-pane label="我的关注" name="following">Config</el-tab-pane>
-                        <el-tab-pane label="我的粉丝" name="follower">Role</el-tab-pane>
+                    <el-tabs v-model="activeName" stretch @tab-change="handleTabChange">
+                        <el-tab-pane label="我的收藏" name="favourite">
+                            <ul class="favouriteList">
+                                <li class="favourite" type="none" v-for="favourite in favouriteList">
+                                    <el-empty :image="favourite.url" />
+                                </li>
+                            </ul>
+                        </el-tab-pane>
+                        <el-tab-pane label="我的关注" name="following">
+
+                        </el-tab-pane>
+                        <el-tab-pane label="我的粉丝" name="follower">
+
+                        </el-tab-pane>
                     </el-tabs>
                 </el-col>
             </el-row>
@@ -192,6 +202,19 @@ export default {
                     trigger: 'blur'
                 }]
             },
+            favouriteList: [{
+                url: null
+            }, {
+                url: null
+            }, {
+                url: null
+            }, {
+                url: null
+            }, {
+                url: null
+            }, {
+                url: null
+            }],
             headers: {
                 token: null,
             },
@@ -218,6 +241,9 @@ export default {
         }
     },
     methods: {
+        handleTabChange(name) {
+            console.log(name)
+        },
         handleSuccess(responce, uploadFile, uploadFiles) {
             if (responce.code === 1) {
                 ElMessage({
@@ -359,6 +385,20 @@ export default {
     margin: 20px;
     padding: 20px;
     box-shadow: var(--el-box-shadow-lighter);
+}
+
+.favouriteList {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 0%;
+    padding: 0%;
+}
+
+.favourite {
+    width: 25%;
 }
 
 .dialog {

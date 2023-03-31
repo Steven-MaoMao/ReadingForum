@@ -33,17 +33,17 @@ router.beforeEach(async (to, from) => {
       }
     }
     if (JSON.parse(sessionStorage.getItem('username')) === null) {
-      const { data: res } = await axios.get('/user')
+      const { data: res } = await axios.get('/user/userInfo')
       if (res.code === 1) {
-        sessionStorage.setItem('username', JSON.stringify(res.data.username))
-        sessionStorage.setItem('avatar', JSON.stringify(res.data.avatar))
-        sessionStorage.setItem('nickname', JSON.stringify(res.data.nickname))
-        sessionStorage.setItem('gender', JSON.stringify(res.data.gender))
-        sessionStorage.setItem('birthday', JSON.stringify(res.data.birthday))
-        sessionStorage.setItem('phone', JSON.stringify(res.data.phone))
-        sessionStorage.setItem('email', JSON.stringify(res.data.email))
-        sessionStorage.setItem('location', JSON.stringify(res.data.location))
-        sessionStorage.setItem('bio', JSON.stringify(res.data.bio))
+        sessionStorage.setItem('username', JSON.stringify(res.data.userInfo.username))
+        sessionStorage.setItem('avatar', JSON.stringify(res.data.userInfo.avatar))
+        sessionStorage.setItem('nickname', JSON.stringify(res.data.userInfo.nickname))
+        sessionStorage.setItem('gender', JSON.stringify(res.data.userInfo.gender))
+        sessionStorage.setItem('birthday', JSON.stringify(res.data.userInfo.birthday))
+        sessionStorage.setItem('phone', JSON.stringify(res.data.userInfo.phone))
+        sessionStorage.setItem('email', JSON.stringify(res.data.userInfo.email))
+        sessionStorage.setItem('location', JSON.stringify(res.data.userInfo.location))
+        sessionStorage.setItem('bio', JSON.stringify(res.data.userInfo.bio))
       } else {
         console.log(res.message)
       }
