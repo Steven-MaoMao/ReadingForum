@@ -53,11 +53,35 @@
                 <el-col>
                     <el-tabs v-model="activeName" stretch @tab-change="handleTabChange">
                         <el-tab-pane label="我的收藏" name="favourite">
-                            <ul class="favouriteList">
-                                <li class="favourite" type="none" v-for="favourite in favouriteList">
-                                    <el-empty :image="favourite.url" />
-                                </li>
-                            </ul>
+                            <el-row>
+                                <el-col>
+                                    <ul class="favouriteList">
+                                        <li class="favourite" type="none" v-for="favourite in favouriteList">
+                                            <el-card :body-style="{ width: '100%', height: '100%', padding: '0px' }">
+                                                <el-image :src="this.$http.defaults.baseURL + favourite.bookCover"
+                                                    fit="cover" style="width: 100%; min-height: 190px;">
+                                                </el-image>
+                                                <el-descriptions size="small" :column=1>
+                                                    <el-descriptions-item label="书名">{{ favourite.name
+                                                    }}</el-descriptions-item>
+                                                    <el-descriptions-item label="作者">{{ favourite.author
+                                                    }}</el-descriptions-item>
+                                                    <el-descriptions-item label="出版社">{{ favourite.publisher
+                                                    }}</el-descriptions-item>
+                                                </el-descriptions>
+                                            </el-card>
+                                        </li>
+                                    </ul>
+                                </el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col>
+                                    <div style="flex-grow: 1; display: flex; justify-content: center;">
+                                        <el-pagination background layout="prev, pager, next" :page-size=16
+                                            :total=totalFavourite @current-change="currentChange" />
+                                    </div>
+                                </el-col>
+                            </el-row>
                         </el-tab-pane>
                         <el-tab-pane label="我的关注" name="following">
 
@@ -202,19 +226,8 @@ export default {
                     trigger: 'blur'
                 }]
             },
-            favouriteList: [{
-                url: null
-            }, {
-                url: null
-            }, {
-                url: null
-            }, {
-                url: null
-            }, {
-                url: null
-            }, {
-                url: null
-            }],
+            favouriteList: [],
+            totalFavourite: null,
             headers: {
                 token: null,
             },
@@ -225,7 +238,7 @@ export default {
             avatarUrl: null
         }
     },
-    mounted() {
+    async mounted() {
         this.headers.token = JSON.parse(sessionStorage.getItem('token'))
         this.userInfo.username = JSON.parse(sessionStorage.getItem('username'))
         this.userInfo.avatar = JSON.parse(sessionStorage.getItem('avatar'))
@@ -239,10 +252,19 @@ export default {
         if (JSON.parse(sessionStorage.getItem('avatar')) !== null) {
             this.avatarUrl = this.$http.defaults.baseURL + JSON.parse(sessionStorage.getItem('avatar'))
         }
+        const { data: res } = await this.$http.get('/user/favouriteByPage?page=1')
+        this.favouriteList = res.data.bookList
+        this.totalFavourite = res.data.num
     },
     methods: {
         handleTabChange(name) {
             console.log(name)
+        },
+        async currentChange(page) {
+            const { data: res } = await this.$http.get('/user/favouriteByPage?page=' + page)
+            this.favouriteList = res.data.bookList
+            this.totalFavourite = res.data.num
+            console.log(res)
         },
         handleSuccess(responce, uploadFile, uploadFiles) {
             if (responce.code === 1) {
@@ -385,6 +407,14 @@ export default {
     margin: 20px;
     padding: 20px;
     box-shadow: var(--el-box-shadow-lighter);
+}
+
+.el-card {
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .favouriteList {
