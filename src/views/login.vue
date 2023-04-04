@@ -74,6 +74,7 @@ export default {
             this.$cookies.set('token', res.data.token, '1m')
           }
           sessionStorage.setItem('token', JSON.stringify(res.data.token))
+          sessionStorage.setItem('id', JSON.stringify(res.data.userInfo.id))
           sessionStorage.setItem('username', JSON.stringify(res.data.userInfo.username))
           sessionStorage.setItem('avatar', JSON.stringify(res.data.userInfo.avatar))
           sessionStorage.setItem('nickname', JSON.stringify(res.data.userInfo.nickname))

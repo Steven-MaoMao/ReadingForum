@@ -20,6 +20,19 @@ const router = createRouter({
     name: 'home',
     path: '/home',
     component: () => import('../views/home.vue')
+  }, {
+    name: 'user',
+    path: '/user',
+    component: () => import('../views/user.vue'),
+    beforeEnter: (to, from) => {
+      if (to.query.userId == JSON.parse(sessionStorage.getItem('id'))) {
+        return { name: 'home' }
+      }
+    },
+  }, {
+    name: 'book',
+    path: '/book',
+    component: () => import('../views/book.vue')
   }]
 })
 
@@ -35,6 +48,7 @@ router.beforeEach(async (to, from) => {
     if (JSON.parse(sessionStorage.getItem('username')) === null) {
       const { data: res } = await axios.get('/user/userInfo')
       if (res.code === 1) {
+        sessionStorage.setItem('id', JSON.stringify(res.data.userInfo.id))
         sessionStorage.setItem('username', JSON.stringify(res.data.userInfo.username))
         sessionStorage.setItem('avatar', JSON.stringify(res.data.userInfo.avatar))
         sessionStorage.setItem('nickname', JSON.stringify(res.data.userInfo.nickname))

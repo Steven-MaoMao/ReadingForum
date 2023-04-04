@@ -53,15 +53,19 @@
                 <el-col>
                     <el-tabs v-model="activeName" stretch @tab-change="handleTabChange">
                         <el-tab-pane label="我的收藏" name="favourite">
-                            <el-row>
+                            <div v-if="this.totalFavourite === 0">
+                                <el-empty />
+                            </div>
+                            <el-row v-else>
                                 <el-col>
                                     <ul class="favouriteList">
                                         <li class="favourite" type="none" v-for="favourite in favouriteList">
-                                            <el-card :body-style="{ width: '100%', height: '100%', padding: '0px' }">
+                                            <el-card class="favouriteItem"
+                                                :body-style="{ width: '100%', height: '100%', padding: '0px' }">
                                                 <el-image :src="this.$http.defaults.baseURL + favourite.bookCover"
-                                                    fit="cover" style="width: 100%; min-height: 190px;">
+                                                    fit="cover" style="width: 100%; height: 250px;">
                                                 </el-image>
-                                                <el-descriptions size="small" :column=1>
+                                                <el-descriptions size="small" :column=1 style="margin-left: 20px;">
                                                     <el-descriptions-item label="书名">{{ favourite.name
                                                     }}</el-descriptions-item>
                                                     <el-descriptions-item label="作者">{{ favourite.author
@@ -78,16 +82,77 @@
                                 <el-col>
                                     <div style="flex-grow: 1; display: flex; justify-content: center;">
                                         <el-pagination background layout="prev, pager, next" :page-size=16
-                                            :total=totalFavourite @current-change="currentChange" />
+                                            :total=totalFavourite @current-change="favouriteCurrentChange" />
                                     </div>
                                 </el-col>
                             </el-row>
                         </el-tab-pane>
                         <el-tab-pane label="我的关注" name="following">
-
+                            <div v-if="this.totalFollowing === 0">
+                                <el-empty />
+                            </div>
+                            <el-row v-else v-for="following in followingList">
+                                <el-col :span="24">
+                                    <el-card shadow="hover" class="following" @click="gotoUser(following.id)">
+                                        <el-row style="width: 100%;">
+                                            <el-col :span="2">
+                                                <el-avatar :size="50" :src="this.$http.defaults.baseURL + following.avatar">
+                                                    {{ following.username }}
+                                                </el-avatar>
+                                            </el-col>
+                                            <el-col :span="19" v-if="following.nickname">
+                                                {{ following.nickname }}
+                                            </el-col>
+                                            <el-col :span="19" v-else>
+                                                {{ following.username }}
+                                            </el-col>
+                                            <el-col :span="3">
+                                                <el-button @click="deleteFollow(following.id)">取消关注</el-button>
+                                            </el-col>
+                                        </el-row>
+                                    </el-card>
+                                </el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col>
+                                    <div style="flex-grow: 1; display: flex; justify-content: center;">
+                                        <el-pagination background layout="prev, pager, next" :page-size=10
+                                            :total=totalFollowing @current-change="followingCurrentChange" />
+                                    </div>
+                                </el-col>
+                            </el-row>
                         </el-tab-pane>
                         <el-tab-pane label="我的粉丝" name="follower">
-
+                            <div v-if="this.totalFollower === 0">
+                                <el-empty />
+                            </div>
+                            <el-row v-else v-for="follower in followerList">
+                                <el-col :span="24">
+                                    <el-card shadow="hover" class="following" @click="gotoUser(follower.id)">
+                                        <el-row style="width: 100%;">
+                                            <el-col :span="2">
+                                                <el-avatar :size="50" :src="this.$http.defaults.baseURL + follower.avatar">
+                                                    {{ follower.username }}
+                                                </el-avatar>
+                                            </el-col>
+                                            <el-col :span="19" v-if="follower.nickname">
+                                                {{ follower.nickname }}
+                                            </el-col>
+                                            <el-col :span="19" v-else>
+                                                {{ follower.username }}
+                                            </el-col>
+                                        </el-row>
+                                    </el-card>
+                                </el-col>
+                            </el-row>
+                            <el-row>
+                                <el-col>
+                                    <div style="flex-grow: 1; display: flex; justify-content: center;">
+                                        <el-pagination background layout="prev, pager, next" :page-size=10
+                                            :total=totalFollower @current-change="followerCurrentChange" />
+                                    </div>
+                                </el-col>
+                            </el-row>
                         </el-tab-pane>
                     </el-tabs>
                 </el-col>
@@ -194,6 +259,7 @@ export default {
         return {
             userInfo: {
                 username: null,
+                avatar: null,
                 nickname: null,
                 gender: null,
                 birthday: null,
@@ -228,6 +294,10 @@ export default {
             },
             favouriteList: [],
             totalFavourite: null,
+            followingList: [],
+            totalFollowing: null,
+            followerList: [],
+            totalFollower: null,
             headers: {
                 token: null,
             },
@@ -252,19 +322,57 @@ export default {
         if (JSON.parse(sessionStorage.getItem('avatar')) !== null) {
             this.avatarUrl = this.$http.defaults.baseURL + JSON.parse(sessionStorage.getItem('avatar'))
         }
-        const { data: res } = await this.$http.get('/user/favouriteByPage?page=1')
-        this.favouriteList = res.data.bookList
-        this.totalFavourite = res.data.num
+        const { data: favouriteRes } = await this.$http.get('/user/favouriteByPage?page=1')
+        this.favouriteList = favouriteRes.data.bookList
+        this.totalFavourite = favouriteRes.data.num
+        const { data: followingRes } = await this.$http.get('/user/followingByPage?page=1')
+        this.followingList = followingRes.data.userList
+        this.totalFollowing = followingRes.data.num
+        const { data: followerRes } = await this.$http.get('/user/followerByPage?page=1')
+        this.followerList = followerRes.data.userList
+        this.totalFollower = followerRes.data.num
     },
     methods: {
         handleTabChange(name) {
             console.log(name)
         },
-        async currentChange(page) {
+        async favouriteCurrentChange(page) {
             const { data: res } = await this.$http.get('/user/favouriteByPage?page=' + page)
             this.favouriteList = res.data.bookList
             this.totalFavourite = res.data.num
-            console.log(res)
+        },
+        async followingCurrentChange(page) {
+            const { data: res } = await this.$http.get('/user/followingByPage?page=' + page)
+            this.followingList = res.data.userList
+            this.totalFollowing = res.data.num
+        },
+        async deleteFollow(followingId) {
+            const { data: res } = await this.$http.delete('/user/deleteFollowing?followingId=' + followingId)
+            if (res.code === 1) {
+                ElMessage({
+                    message: res.message,
+                    type: 'success'
+                })
+                const { data: followingRes } = await this.$http.get('/user/followingByPage?page=1')
+                this.followingList = followingRes.data.userList
+                this.totalFollowing = followingRes.data.num
+            } else {
+                ElMessage({
+                    message: res.message,
+                    type: 'error'
+                })
+            }
+        },
+        async followerCurrentChange(page) {
+            const { data: res } = await this.$http.get('/user/followerByPage?page=' + page)
+            this.followerList = res.data.userList
+            this.totalFollower = res.data.num
+        },
+        gotoUser(id) {
+            const url = String(window.location.href)
+            const baseURL = url.split('/')[0]
+            const newURL = baseURL + '/user?userId=' + String(id)
+            window.location.href = newURL
         },
         handleSuccess(responce, uploadFile, uploadFiles) {
             if (responce.code === 1) {
@@ -409,7 +517,7 @@ export default {
     box-shadow: var(--el-box-shadow-lighter);
 }
 
-.el-card {
+.favouriteItem {
     margin: 20px;
     display: flex;
     flex-direction: column;
@@ -429,6 +537,10 @@ export default {
 
 .favourite {
     width: 25%;
+}
+
+.following {
+    margin: 10px;
 }
 
 .dialog {
