@@ -1,163 +1,168 @@
 <template>
     <el-container>
-        <el-header>
-
+        <el-header height="auto" style="padding: 20px; box-shadow: var(--el-box-shadow-lighter);">
+            <myHead></myHead>
         </el-header>
-        <el-main>
-            <el-row class="block">
-                <el-col>
-                    <el-row justify="center" style="margin-bottom: 40px;">
-                        <el-col :span="20">
-                            <el-avatar :size="100" shape="square" fit="cover" :src="this.avatarUrl">
-                                {{ this.userInfo.username }}
-                            </el-avatar>
-                        </el-col>
-                        <el-col :span="2">
-                            <el-button @click="changeAvatarDialogVisible = true">上传头像</el-button>
-                        </el-col>
-                    </el-row>
-                    <el-row justify="center">
-                        <el-col :span="20">
-                            <el-descriptions title="个人信息">
-                                <el-descriptions-item label="用户名：">{{ userInfo.username }}</el-descriptions-item>
-                                <el-descriptions-item label="昵称：">{{ userInfo.nickname }}</el-descriptions-item>
-                                <el-descriptions-item label="性别：">{{ userInfo.gender }}</el-descriptions-item>
-                                <el-descriptions-item label="生日：">{{ userInfo.birthday }}</el-descriptions-item>
-                                <el-descriptions-item label="手机：">{{ userInfo.phone }}</el-descriptions-item>
-                                <el-descriptions-item label="邮箱：">{{ userInfo.email }}</el-descriptions-item>
-                                <el-descriptions-item label="地址：">{{ userInfo.location }}</el-descriptions-item>
-                                <el-descriptions-item label="个性签名：">{{ userInfo.bio }}</el-descriptions-item>
-                            </el-descriptions>
-                        </el-col>
-                        <el-col :span="2" style="display: flex; flex-direction: column; justify-content: space-between;">
-                            <el-row>
-                                <el-col>
-                                    <el-button @click="changeUserInfoDialogVisible = true">修改信息</el-button>
-                                </el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col>
-                                    <el-button @click="changePasswordDialogVisible = true">修改密码</el-button>
-                                </el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col>
-                                    <el-button type="danger" @click="logout">退出登录</el-button>
-                                </el-col>
-                            </el-row>
-                        </el-col>
-                    </el-row>
-                </el-col>
-            </el-row>
-            <el-row class="block">
-                <el-col>
-                    <el-tabs v-model="activeName" stretch @tab-change="handleTabChange">
-                        <el-tab-pane label="我的收藏" name="favourite">
-                            <div v-if="this.totalFavourite === 0">
-                                <el-empty />
-                            </div>
-                            <el-row v-else>
-                                <el-col>
-                                    <ul class="favouriteList">
-                                        <li class="favourite" type="none" v-for="favourite in favouriteList">
-                                            <el-card class="favouriteItem"
-                                                :body-style="{ width: '100%', height: '100%', padding: '0px' }">
-                                                <el-image :src="this.$http.defaults.baseURL + favourite.bookCover"
-                                                    fit="cover" style="width: 100%; height: 250px;">
-                                                </el-image>
-                                                <el-descriptions size="small" :column=1 style="margin-left: 20px;">
-                                                    <el-descriptions-item label="书名">{{ favourite.name
-                                                    }}</el-descriptions-item>
-                                                    <el-descriptions-item label="作者">{{ favourite.author
-                                                    }}</el-descriptions-item>
-                                                    <el-descriptions-item label="出版社">{{ favourite.publisher
-                                                    }}</el-descriptions-item>
-                                                </el-descriptions>
-                                            </el-card>
-                                        </li>
-                                    </ul>
-                                </el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col>
-                                    <div style="flex-grow: 1; display: flex; justify-content: center;">
-                                        <el-pagination background layout="prev, pager, next" :page-size=16
-                                            :total=totalFavourite @current-change="favouriteCurrentChange" />
-                                    </div>
-                                </el-col>
-                            </el-row>
-                        </el-tab-pane>
-                        <el-tab-pane label="我的关注" name="following">
-                            <div v-if="this.totalFollowing === 0">
-                                <el-empty />
-                            </div>
-                            <el-row v-else v-for="following in followingList">
-                                <el-col :span="24">
-                                    <el-card shadow="hover" class="following" @click="gotoUser(following.id)">
-                                        <el-row style="width: 100%;">
-                                            <el-col :span="2">
-                                                <el-avatar :size="50" :src="this.$http.defaults.baseURL + following.avatar">
+        <div class="container">
+            <el-main>
+                <el-row class="block">
+                    <el-col>
+                        <el-row justify="center" style="margin-bottom: 40px;">
+                            <el-col :span="20">
+                                <el-avatar :size="100" shape="square" fit="cover" :src="this.avatarUrl">
+                                    {{ this.userInfo.username }}
+                                </el-avatar>
+                            </el-col>
+                            <el-col :span="2">
+                                <el-button @click="changeAvatarDialogVisible = true">上传头像</el-button>
+                            </el-col>
+                        </el-row>
+                        <el-row justify="center">
+                            <el-col :span="20">
+                                <el-descriptions title="个人信息">
+                                    <el-descriptions-item label="用户名：">{{ userInfo.username }}</el-descriptions-item>
+                                    <el-descriptions-item label="昵称：">{{ userInfo.nickname }}</el-descriptions-item>
+                                    <el-descriptions-item label="性别：">{{ userInfo.gender }}</el-descriptions-item>
+                                    <el-descriptions-item label="生日：">{{ userInfo.birthday }}</el-descriptions-item>
+                                    <el-descriptions-item label="手机：">{{ userInfo.phone }}</el-descriptions-item>
+                                    <el-descriptions-item label="邮箱：">{{ userInfo.email }}</el-descriptions-item>
+                                    <el-descriptions-item label="地址：">{{ userInfo.location }}</el-descriptions-item>
+                                    <el-descriptions-item label="个性签名：">{{ userInfo.bio }}</el-descriptions-item>
+                                </el-descriptions>
+                            </el-col>
+                            <el-col :span="2"
+                                style="display: flex; flex-direction: column; justify-content: space-between;">
+                                <el-row>
+                                    <el-col>
+                                        <el-button @click="changeUserInfoDialogVisible = true">修改信息</el-button>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col>
+                                        <el-button @click="changePasswordDialogVisible = true">修改密码</el-button>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col>
+                                        <el-button type="danger" @click="logout">退出登录</el-button>
+                                    </el-col>
+                                </el-row>
+                            </el-col>
+                        </el-row>
+                    </el-col>
+                </el-row>
+                <el-row class="block">
+                    <el-col>
+                        <el-tabs v-model="activeName" stretch @tab-change="handleTabChange">
+                            <el-tab-pane label="我的收藏" name="favourite">
+                                <div v-if="this.totalFavourite === 0">
+                                    <el-empty />
+                                </div>
+                                <el-row v-else>
+                                    <el-col>
+                                        <ul class="favouriteList">
+                                            <li class="favourite" type="none" v-for="favourite in favouriteList">
+                                                <el-card class="favouriteItem" @click="gotoBook(favourite.id)"
+                                                    :body-style="{ width: '100%', height: '100%', padding: '0px' }">
+                                                    <el-image :src="this.$http.defaults.baseURL + favourite.bookCover"
+                                                        fit="cover" style="width: 100%; height: 250px;">
+                                                    </el-image>
+                                                    <el-descriptions size="small" :column=1 style="margin-left: 20px;">
+                                                        <el-descriptions-item label="书名">{{ favourite.name
+                                                        }}</el-descriptions-item>
+                                                        <el-descriptions-item label="作者">{{ favourite.author
+                                                        }}</el-descriptions-item>
+                                                        <el-descriptions-item label="出版社">{{ favourite.publisher
+                                                        }}</el-descriptions-item>
+                                                    </el-descriptions>
+                                                </el-card>
+                                            </li>
+                                        </ul>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col>
+                                        <div style="flex-grow: 1; display: flex; justify-content: center;">
+                                            <el-pagination background layout="prev, pager, next" :page-size=16
+                                                :total=totalFavourite @current-change="favouriteCurrentChange" />
+                                        </div>
+                                    </el-col>
+                                </el-row>
+                            </el-tab-pane>
+                            <el-tab-pane label="我的关注" name="following">
+                                <div v-if="this.totalFollowing === 0">
+                                    <el-empty />
+                                </div>
+                                <el-row v-else v-for="following in followingList">
+                                    <el-col :span="24">
+                                        <el-card shadow="hover" class="following" @click="gotoUser(following.id)">
+                                            <el-row style="width: 100%;">
+                                                <el-col :span="2">
+                                                    <el-avatar :size="50"
+                                                        :src="this.$http.defaults.baseURL + following.avatar">
+                                                        {{ following.username }}
+                                                    </el-avatar>
+                                                </el-col>
+                                                <el-col :span="19" v-if="following.nickname">
+                                                    {{ following.nickname }}
+                                                </el-col>
+                                                <el-col :span="19" v-else>
                                                     {{ following.username }}
-                                                </el-avatar>
-                                            </el-col>
-                                            <el-col :span="19" v-if="following.nickname">
-                                                {{ following.nickname }}
-                                            </el-col>
-                                            <el-col :span="19" v-else>
-                                                {{ following.username }}
-                                            </el-col>
-                                            <el-col :span="3">
-                                                <el-button @click="deleteFollow(following.id)">取消关注</el-button>
-                                            </el-col>
-                                        </el-row>
-                                    </el-card>
-                                </el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col>
-                                    <div style="flex-grow: 1; display: flex; justify-content: center;">
-                                        <el-pagination background layout="prev, pager, next" :page-size=10
-                                            :total=totalFollowing @current-change="followingCurrentChange" />
-                                    </div>
-                                </el-col>
-                            </el-row>
-                        </el-tab-pane>
-                        <el-tab-pane label="我的粉丝" name="follower">
-                            <div v-if="this.totalFollower === 0">
-                                <el-empty />
-                            </div>
-                            <el-row v-else v-for="follower in followerList">
-                                <el-col :span="24">
-                                    <el-card shadow="hover" class="following" @click="gotoUser(follower.id)">
-                                        <el-row style="width: 100%;">
-                                            <el-col :span="2">
-                                                <el-avatar :size="50" :src="this.$http.defaults.baseURL + follower.avatar">
+                                                </el-col>
+                                                <el-col :span="3">
+                                                    <el-button @click="deleteFollow(following.id)">取消关注</el-button>
+                                                </el-col>
+                                            </el-row>
+                                        </el-card>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col>
+                                        <div style="flex-grow: 1; display: flex; justify-content: center;">
+                                            <el-pagination background layout="prev, pager, next" :page-size=10
+                                                :total=totalFollowing @current-change="followingCurrentChange" />
+                                        </div>
+                                    </el-col>
+                                </el-row>
+                            </el-tab-pane>
+                            <el-tab-pane label="我的粉丝" name="follower">
+                                <div v-if="this.totalFollower === 0">
+                                    <el-empty />
+                                </div>
+                                <el-row v-else v-for="follower in followerList">
+                                    <el-col :span="24">
+                                        <el-card shadow="hover" class="following" @click="gotoUser(follower.id)">
+                                            <el-row style="width: 100%;">
+                                                <el-col :span="2">
+                                                    <el-avatar :size="50"
+                                                        :src="this.$http.defaults.baseURL + follower.avatar">
+                                                        {{ follower.username }}
+                                                    </el-avatar>
+                                                </el-col>
+                                                <el-col :span="19" v-if="follower.nickname">
+                                                    {{ follower.nickname }}
+                                                </el-col>
+                                                <el-col :span="19" v-else>
                                                     {{ follower.username }}
-                                                </el-avatar>
-                                            </el-col>
-                                            <el-col :span="19" v-if="follower.nickname">
-                                                {{ follower.nickname }}
-                                            </el-col>
-                                            <el-col :span="19" v-else>
-                                                {{ follower.username }}
-                                            </el-col>
-                                        </el-row>
-                                    </el-card>
-                                </el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col>
-                                    <div style="flex-grow: 1; display: flex; justify-content: center;">
-                                        <el-pagination background layout="prev, pager, next" :page-size=10
-                                            :total=totalFollower @current-change="followerCurrentChange" />
-                                    </div>
-                                </el-col>
-                            </el-row>
-                        </el-tab-pane>
-                    </el-tabs>
-                </el-col>
-            </el-row>
-        </el-main>
+                                                </el-col>
+                                            </el-row>
+                                        </el-card>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col>
+                                        <div style="flex-grow: 1; display: flex; justify-content: center;">
+                                            <el-pagination background layout="prev, pager, next" :page-size=10
+                                                :total=totalFollower @current-change="followerCurrentChange" />
+                                        </div>
+                                    </el-col>
+                                </el-row>
+                            </el-tab-pane>
+                        </el-tabs>
+                    </el-col>
+                </el-row>
+            </el-main>
+        </div>
     </el-container>
     <el-dialog v-model="changeAvatarDialogVisible" title="上传头像" width="30%">
         <div class="dialog">
@@ -254,7 +259,9 @@
 <script>
 import { Plus } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
+import myHead from '../components/myHead.vue'
 export default {
+    components: { myHead },
     data() {
         return {
             userInfo: {
@@ -367,6 +374,12 @@ export default {
             const { data: res } = await this.$http.get('/user/followerByPage?page=' + page)
             this.followerList = res.data.userList
             this.totalFollower = res.data.num
+        },
+        gotoBook(id) {
+            const url = String(window.location.href)
+            const baseURL = url.split('/')[0]
+            const newURL = baseURL + '/book?bookId=' + String(id)
+            window.location.href = newURL
         },
         gotoUser(id) {
             const url = String(window.location.href)
@@ -503,7 +516,10 @@ export default {
 </script>
 
 <style scoped>
-.el-container {
+.container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
     align-items: center;
 }
 
@@ -573,5 +589,4 @@ export default {
     width: 200px;
     height: 200px;
     text-align: center;
-}
-</style>
+}</style>

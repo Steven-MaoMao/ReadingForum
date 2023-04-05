@@ -1,144 +1,200 @@
 <template>
     <el-container>
-        <el-header>
-
+        <el-header height="auto" style="padding: 20px; box-shadow: var(--el-box-shadow-lighter);">
+            <myHead></myHead>
         </el-header>
-        <el-main>
-            <el-row class="block">
-                <el-col>
-                    <el-row justify="space-around" style="margin-bottom: 40px;">
-                        <el-col :span="8">
-                            <el-image :src="this.$http.defaults.baseURL + this.bookInfo.bookCover" fit="cover"
-                                style="width: 250px; height: 300px;"></el-image>
-                        </el-col>
-                        <el-col :span="6" style="padding-top: 40px;">
-                            <el-descriptions title="书籍信息" :column="1">
-                                <el-descriptions-item label="书名：">{{ bookInfo.name }}</el-descriptions-item>
-                                <el-descriptions-item label="作者：">{{ bookInfo.author }}</el-descriptions-item>
-                                <el-descriptions-item label="出版社：">{{ bookInfo.publisher }}</el-descriptions-item>
-                                <el-descriptions-item label="出版时间：">{{ bookInfo.publishTime }}</el-descriptions-item>
-                                <el-descriptions-item label="译者：">{{ bookInfo.translator }}</el-descriptions-item>
-                                <el-descriptions-item label="ISBN：">{{ bookInfo.ISBN }}</el-descriptions-item>
-                            </el-descriptions>
-                        </el-col>
-                        <el-col :span="10" style="padding-top: 40px;">
-                            书籍评分：
-                            <el-row style="margin-bottom: 20px;">
-                                <el-col :span="6" style="display: flex; align-items: center;">
-                                    <span style="font-size: xx-large;">
-                                        {{ this.bookRate.average }} / 5
-                                    </span>
-                                </el-col>
-                                <el-col :span="18">
-                                    <el-rate v-model="this.bookRate.average" disabled size="large"></el-rate>
-                                </el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col :span="6">
-                                    5分：
-                                </el-col>
-                                <el-col :span="18">
-                                    <el-progress :percentage="this.bookRate.five" />
-                                </el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col :span="6">
-                                    4分：
-                                </el-col>
-                                <el-col :span="18">
-                                    <el-progress :percentage="this.bookRate.four" />
-                                </el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col :span="6">
-                                    3分：
-                                </el-col>
-                                <el-col :span="18">
-                                    <el-progress :percentage="this.bookRate.three" />
-                                </el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col :span="6">
-                                    2分：
-                                </el-col>
-                                <el-col :span="18">
-                                    <el-progress :percentage="this.bookRate.two" />
-                                </el-col>
-                            </el-row>
-                            <el-row>
-                                <el-col :span="6">
-                                    1分：
-                                </el-col>
-                                <el-col :span="18">
-                                    <el-progress :percentage="this.bookRate.one" />
-                                </el-col>
-                            </el-row>
-                        </el-col>
-                    </el-row>
-                </el-col>
-            </el-row>
-            <el-row class="block">
-                <el-col>
-                    <el-card shadow="never">
-                        <template #header>
-                            <span style="font-size: large; font-weight: 500;">
-                                作者简介：
-                            </span>
-                        </template>
-                        <div v-if="this.bookInfo.authorIntroduction !== null">
-                            {{ this.bookInfo.authorIntroduction }}
-                        </div>
-                        <div v-else>
-                            <el-empty />
-                        </div>
-                    </el-card>
-                    <el-card shadow="never" style="margin-top: 20px;">
-                        <template #header>
-                            <span style="font-size: large; font-weight: 500;">
-                                书本简介：
-                            </span>
-                        </template>
-                        <div v-if="this.bookInfo.bookIntroduction !== null">
-                            {{ this.bookInfo.bookIntroduction }}
-                        </div>
-                        <div v-else>
-                            <el-empty />
-                        </div>
-                    </el-card>
-                </el-col>
-            </el-row>
-            <el-row class="block">
-                <el-col>
-                    <el-row>
-                        <el-col :span="2" style="display: flex; align-items: center;">
-                            <span>评分：</span>
-                        </el-col>
-                        <el-col :span="20">
-                            <el-rate v-model="this.bookRate.myRate" size="large" :texts="['很差', '较差', '一般', '较好', '很好']"
-                                show-text />
-                        </el-col>
-                        <el-col :span="2">
-                            <el-button type="private" @click="updateMyRate">确认</el-button>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col>
+        <div class="container">
+            <el-main>
+                <el-row class="block">
+                    <el-col>
+                        <el-row justify="space-around" style="margin-bottom: 40px;">
+                            <el-col :span="8">
+                                <el-image :src="this.$http.defaults.baseURL + this.bookInfo.bookCover" fit="cover"
+                                    style="width: 250px; height: 300px;"></el-image>
+                            </el-col>
+                            <el-col :span="6" style="padding-top: 40px;">
+                                <el-descriptions title="书籍信息" :column="1">
+                                    <el-descriptions-item label="书名：">{{ bookInfo.name }}</el-descriptions-item>
+                                    <el-descriptions-item label="作者：">{{ bookInfo.author }}</el-descriptions-item>
+                                    <el-descriptions-item label="出版社：">{{ bookInfo.publisher }}</el-descriptions-item>
+                                    <el-descriptions-item label="出版时间：">{{ bookInfo.publishTime }}</el-descriptions-item>
+                                    <el-descriptions-item label="译者：">{{ bookInfo.translator }}</el-descriptions-item>
+                                    <el-descriptions-item label="ISBN：">{{ bookInfo.ISBN }}</el-descriptions-item>
+                                </el-descriptions>
+                            </el-col>
+                            <el-col :span="10" style="padding-top: 40px;">
+                                书籍评分：
+                                <el-row style="margin-bottom: 20px;">
+                                    <el-col :span="6" style="display: flex; align-items: center;">
+                                        <span style="font-size: x-large;">
+                                            {{ this.bookRate.average }} / 5
+                                        </span>
+                                    </el-col>
+                                    <el-col :span="18">
+                                        <el-rate v-model="this.bookRate.average" disabled size="large"></el-rate>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col :span="6">
+                                        5分：
+                                    </el-col>
+                                    <el-col :span="18">
+                                        <el-progress :percentage="this.bookRate.five" />
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col :span="6">
+                                        4分：
+                                    </el-col>
+                                    <el-col :span="18">
+                                        <el-progress :percentage="this.bookRate.four" />
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col :span="6">
+                                        3分：
+                                    </el-col>
+                                    <el-col :span="18">
+                                        <el-progress :percentage="this.bookRate.three" />
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col :span="6">
+                                        2分：
+                                    </el-col>
+                                    <el-col :span="18">
+                                        <el-progress :percentage="this.bookRate.two" />
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col :span="6">
+                                        1分：
+                                    </el-col>
+                                    <el-col :span="18">
+                                        <el-progress :percentage="this.bookRate.one" />
+                                    </el-col>
+                                </el-row>
+                                <el-row style="margin-top: 50px;">
+                                    <el-col>
+                                        <el-button v-if="this.isFavourite === false" @click="favourite">收藏</el-button>
+                                        <el-button v-else @click="disFavourite" type="danger">取消收藏</el-button>
+                                    </el-col>
+                                </el-row>
+                            </el-col>
+                        </el-row>
+                    </el-col>
+                </el-row>
+                <el-row class="block">
+                    <el-col>
+                        <el-card shadow="never">
+                            <template #header>
+                                <span style="font-size: large; font-weight: 500;">
+                                    作者简介：
+                                </span>
+                            </template>
+                            <div v-if="this.bookInfo.authorIntroduction !== null">
+                                {{ this.bookInfo.authorIntroduction }}
+                            </div>
+                            <div v-else>
+                                <el-empty />
+                            </div>
+                        </el-card>
+                        <el-card shadow="never" style="margin-top: 20px;">
+                            <template #header>
+                                <span style="font-size: large; font-weight: 500;">
+                                    书本简介：
+                                </span>
+                            </template>
+                            <div v-if="this.bookInfo.bookIntroduction !== null">
+                                {{ this.bookInfo.bookIntroduction }}
+                            </div>
+                            <div v-else>
+                                <el-empty />
+                            </div>
+                        </el-card>
+                    </el-col>
+                </el-row>
+                <el-row class="block">
+                    <el-col>
+                        <el-row>
+                            <el-col :span="2" style="display: flex; align-items: center;">
+                                <span>评分：</span>
+                            </el-col>
+                            <el-col :span="20">
+                                <el-rate v-model="this.bookRate.myRate" size="large" :texts="['很差', '较差', '一般', '较好', '很好']"
+                                    show-text />
+                            </el-col>
+                            <el-col :span="2">
+                                <el-button type="primary" @click="updateMyRate">确认</el-button>
+                            </el-col>
+                        </el-row>
+                        <el-row style="margin-top: 20px;">
+                            <el-col :span="2" style="display: flex; align-items: center;">
+                                <span>评论：</span>
+                            </el-col>
+                            <el-col :span="20">
+                                <el-input v-model="this.myComment" type="textarea" style="width: 80%;"></el-input>
+                            </el-col>
+                            <el-col :span="2">
+                                <el-button type="primary" @click="updateMyComment">评论</el-button>
+                            </el-col>
+                        </el-row>
+                    </el-col>
+                </el-row>
+                <el-row class="block">
+                    <el-col>
+                        <el-row v-for="comment in this.bookComment">
+                            <el-col>
+                                <el-card style="margin: 10px;">
+                                    <template #header>
+                                        <div @click="this.$router.push('/user?userId=' + comment.id)">
+                                            <el-row>
+                                                <el-col :span="2">
+                                                    <el-avatar :src="this.$http.defaults.baseURL + comment.avatar">{{
+                                                        comment.username }}</el-avatar>
+                                                </el-col>
+                                                <el-col :span="17" style="display: flex; align-items: center;">
+                                                    <div v-if="comment.mickname !== null">{{ comment.nickname }}</div>
+                                                    <div v-else>{{ comment.username }}</div>
+                                                </el-col>
+                                                <el-col :span="5" style="display: flex; align-items: center;">
+                                                    {{ comment.time }}
+                                                </el-col>
+                                            </el-row>
+                                        </div>
 
-                        </el-col>
-                    </el-row>
-                </el-col>
-            </el-row>
-        </el-main>
+                                    </template>
+                                    <div>
+                                        {{ comment.comment }}
+                                    </div>
+                                </el-card>
+                            </el-col>
+                        </el-row>
+                        <el-row>
+                            <el-col>
+                                <div style="flex-grow: 1; display: flex; justify-content: center;">
+                                    <el-pagination background layout="prev, pager, next" :page-size=10 :total=totalComment
+                                        @current-change="commentCurrentChange" />
+                                </div>
+                            </el-col>
+                        </el-row>
+                    </el-col>
+                </el-row>
+            </el-main>
+        </div>
     </el-container>
 </template>
 
 <script>
 import { ElMessage } from 'element-plus'
+import myHead from '../components/myHead.vue'
 export default {
+    components: { myHead },
     data() {
         return {
             bookId: null,
             bookInfo: {},
+            isFavourite: false,
             bookRate: {
                 myRate: 0,
                 average: 0,
@@ -148,7 +204,10 @@ export default {
                 three: 0,
                 two: 0,
                 one: 0
-            }
+            },
+            myComment: null,
+            bookComment: [],
+            totalComment: null
         }
     },
     async mounted() {
@@ -159,10 +218,47 @@ export default {
         if (rateRes.data !== null) {
             this.bookRate = rateRes.data
         }
+        const { data: commentRes } = await this.$http.get('/book/bookCommentByPage?bookId=' + this.bookId + '&page=1')
+        this.bookComment = commentRes.data.commentList
+        this.totalComment = commentRes.data.totalComment
+        const { data: isFavouriteRes } = await this.$http.get('/book/isFavourite?bookId=' + this.bookId)
+        if (isFavouriteRes.code === 1) {
+            this.isFavourite = true
+        }
     },
     methods: {
+        async favourite() {
+            const { data: res } = await this.$http.post('/book/favourite', { 'bookId': this.bookId })
+            if (res.code === 1) {
+                ElMessage({
+                    message: res.message,
+                    type: 'success'
+                })
+                this.isFavourite = true
+            } else {
+                ElMessage({
+                    message: res.message,
+                    type: 'error'
+                })
+            }
+        },
+        async disFavourite() {
+            const { data: res } = await this.$http.delete('/book/deleteFavourite?bookId=' + this.bookId)
+            if (res.code === 1) {
+                ElMessage({
+                    message: res.message,
+                    type: 'success'
+                })
+                this.isFavourite = false
+            } else {
+                ElMessage({
+                    message: res.message,
+                    type: 'error'
+                })
+            }
+        },
         async updateMyRate() {
-            const { data: res } = await this.$http.post('/book/updateRate', { "bookId": this.bookId, "rate": this.bookRate.myRate })
+            const { data: res } = await this.$http.post('/book/updateRate', { 'bookId': this.bookId, 'rate': this.bookRate.myRate })
             if (res.code === 1) {
                 ElMessage({
                     message: res.message,
@@ -176,13 +272,39 @@ export default {
                     type: 'error'
                 })
             }
+        },
+        async updateMyComment() {
+            const { data: res } = await this.$http.post('/book/comment', { 'bookId': this.bookId, 'comment': this.myComment })
+            if (res.code === 1) {
+                ElMessage({
+                    message: res.message,
+                    type: 'success'
+                })
+                const { data: commentRes } = await this.$http.get('/book/bookCommentByPage?bookId=' + this.bookId + '&page=1')
+                this.bookComment = commentRes.data.commentList
+                this.totalComment = commentRes.data.totalComment
+                this.myComment = null
+            } else {
+                ElMessage({
+                    message: res.message,
+                    type: 'error'
+                })
+            }
+        },
+        async commentCurrentChange(page) {
+            const { data: commentRes } = await this.$http.get('/book/bookCommentByPage?bookId=' + this.bookId + '&page=' + page)
+            this.bookComment = commentRes.data.commentList
+            this.totalComment = commentRes.data.totalComment
         }
     }
 }
 </script>
 
 <style scoped>
-.el-container {
+.container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
     align-items: center;
 }
 
