@@ -46,8 +46,9 @@
                                     <el-col>
                                         <ul class="favouriteList">
                                             <li class="favourite" type="none" v-for="favourite in favouriteList">
-                                                <el-card class="favouriteItem" @click="gotoBook(favourite.id)"
-                                                    :body-style="{ width: '100%', height: '100%', padding: '0px' }">
+                                                <el-card @click="gotoBook(favourite.id)"
+                                                    style="margin: 10px; height: 500px;"
+                                                    :body-style="{ 'margin': '20px', 'padding': '0px', 'display': 'flex', 'flex-direction': 'column', 'align-items': 'center' }">
                                                     <el-image :src="this.$http.defaults.baseURL + favourite.bookCover"
                                                         fit="cover" style="width: 100%; height: 250px;">
                                                     </el-image>
@@ -58,6 +59,14 @@
                                                         }}</el-descriptions-item>
                                                         <el-descriptions-item label="出版社">{{ favourite.publisher
                                                         }}</el-descriptions-item>
+                                                        <el-descriptions-item label="标签">
+                                                            <div style="display: flex; flex-direction: column;">
+                                                                <el-tag v-for="tag in favourite.tags" :round="true"
+                                                                    size="small">
+                                                                    {{ tag.name }}
+                                                                </el-tag>
+                                                            </div>
+                                                        </el-descriptions-item>
                                                     </el-descriptions>
                                                 </el-card>
                                             </li>
@@ -275,14 +284,6 @@ export default {
     margin: 20px;
     padding: 20px;
     box-shadow: var(--el-box-shadow-lighter);
-}
-
-.favouriteItem {
-    margin: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
 }
 
 .favouriteList {

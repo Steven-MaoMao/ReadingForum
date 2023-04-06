@@ -12,7 +12,7 @@
                                 <el-image :src="this.$http.defaults.baseURL + this.bookInfo.bookCover" fit="cover"
                                     style="width: 250px; height: 300px;"></el-image>
                             </el-col>
-                            <el-col :span="6" style="padding-top: 40px;">
+                            <el-col :span="6">
                                 <el-descriptions title="书籍信息" :column="1">
                                     <el-descriptions-item label="书名：">{{ bookInfo.name }}</el-descriptions-item>
                                     <el-descriptions-item label="作者：">{{ bookInfo.author }}</el-descriptions-item>
@@ -20,6 +20,13 @@
                                     <el-descriptions-item label="出版时间：">{{ bookInfo.publishTime }}</el-descriptions-item>
                                     <el-descriptions-item label="译者：">{{ bookInfo.translator }}</el-descriptions-item>
                                     <el-descriptions-item label="ISBN：">{{ bookInfo.ISBN }}</el-descriptions-item>
+                                    <el-descriptions-item label="标签：">
+                                        <div style="display: flex; flex-direction: column; width: 60%;">
+                                            <el-tag v-for="tag in bookInfo.tags" :round="true" style="margin-bottom: 5px;">
+                                                {{ tag.name }}
+                                            </el-tag>
+                                        </div>
+                                    </el-descriptions-item>
                                 </el-descriptions>
                             </el-col>
                             <el-col :span="10" style="padding-top: 40px;">

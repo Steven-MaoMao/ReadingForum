@@ -21,8 +21,8 @@
                                     <el-col>
                                         <ul class="bookList">
                                             <li class="book" type="none" v-for="book in bookList">
-                                                <el-card class="bookItem" @click="gotoBook(book.id)"
-                                                    :body-style="{ width: '100%', height: '100%', padding: '0px' }">
+                                                <el-card @click="gotoBook(book.id)" style="margin: 10px; height: 500px;"
+                                                    :body-style="{ 'margin': '20px', 'padding': '0px', 'display': 'flex', 'flex-direction': 'column', 'align-items': 'center' }">
                                                     <el-image :src="this.$http.defaults.baseURL + book.bookCover"
                                                         fit="cover" style="width: 100%; height: 250px;">
                                                     </el-image>
@@ -33,6 +33,13 @@
                                                         }}</el-descriptions-item>
                                                         <el-descriptions-item label="出版社">{{ book.publisher
                                                         }}</el-descriptions-item>
+                                                        <el-descriptions-item label="标签">
+                                                            <div style="display: flex; flex-direction: column;">
+                                                                <el-tag v-for="tag in book.tags" :round="true" size="small">
+                                                                    {{ tag.name }}
+                                                                </el-tag>
+                                                            </div>
+                                                        </el-descriptions-item>
                                                     </el-descriptions>
                                                 </el-card>
                                             </li>
@@ -159,14 +166,6 @@ export default {
     font-size: x-large;
     font-weight: 400;
     padding: 10px;
-}
-
-.bookItem {
-    margin: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
 }
 
 .bookList {
