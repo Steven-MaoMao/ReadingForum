@@ -122,5 +122,6 @@ export default {
 .title {
     font-size: xx-large;
     font-weight: 600;
+    user-select: none;
 }
 </style>

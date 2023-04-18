@@ -33,7 +33,7 @@
                                 </div>
                             </template>
                             <div v-for="tag in topFiveTag" :key="tag">
-                                <el-link :underline="false">
+                                <el-link :underline="false" :href="this.baseLocation + '/bookList?tag=' + String(tag.id)">
                                     <el-icon class="el-icon--left">
                                         <View />
                                     </el-icon>{{ tag.name }}

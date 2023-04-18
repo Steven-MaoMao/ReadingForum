@@ -22,7 +22,8 @@
                                     <el-descriptions-item label="ISBN：">{{ bookInfo.ISBN }}</el-descriptions-item>
                                     <el-descriptions-item label="标签：">
                                         <div style="display: flex; flex-direction: column; width: 60%;">
-                                            <el-tag v-for="tag in bookInfo.tags" :round="true" style="margin-bottom: 5px;">
+                                            <el-tag v-for="tag in bookInfo.tags" :round="true" style="margin-bottom: 5px; user-select: none;"
+                                                @click="gotoTag(tag.id)">
                                                 {{ tag.name }}
                                             </el-tag>
                                         </div>
@@ -302,6 +303,12 @@ export default {
             const { data: commentRes } = await this.$http.get('/book/bookCommentByPage?bookId=' + this.bookId + '&page=' + page)
             this.bookComment = commentRes.data.commentList
             this.totalComment = commentRes.data.totalComment
+        },
+        gotoTag(tag) {
+            const url = String(window.location.href)
+            const baseURL = url.split('/')[0]
+            const newURL = baseURL + '/bookList?tag=' + String(tag)
+            window.location.href = newURL
         }
     }
 }
