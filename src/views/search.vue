@@ -87,6 +87,59 @@
                                     </el-col>
                                 </el-row>
                             </el-tab-pane>
+                            <el-tab-pane label="社团">
+                                <div v-if="this.totalGroup === 0">
+                                    <el-empty />
+                                </div>
+                                <el-row v-else v-for="group in groupList">
+                                    <el-col :span="24">
+                                        <el-card shadow="hover" style="margin: 10px;" @click="gotoGroup(group.id)">
+                                            <el-row style="width: 100%;">
+                                                <el-col :span="2">
+                                                    <el-avatar :size="50" :src="this.$http.defaults.baseURL + group.avatar">
+                                                        {{ group.name }}
+                                                    </el-avatar>
+                                                </el-col>
+                                                <el-col :span="4">
+                                                    {{ group.name }}
+                                                </el-col>
+                                                <el-col :span="12">
+                                                    {{ group.introduction }}
+                                                </el-col>
+                                                <el-col :span="4" :offset="2">
+                                                    <el-row>
+                                                        <el-col :span="8">
+                                                            <el-avatar :size="22"
+                                                                :src="this.$http.defaults.baseURL + group.userAvatar">
+                                                                {{ group.username }}
+                                                            </el-avatar>
+                                                        </el-col>
+                                                        <el-col v-if="group.nickname" :span="16">
+                                                            {{ group.nickname }}
+                                                        </el-col>
+                                                        <el-col v-else :span="16">
+                                                            {{ group.username }}
+                                                        </el-col>
+                                                    </el-row>
+                                                    <el-row>
+                                                        <el-col>
+                                                            {{ group.createTime }}
+                                                        </el-col>
+                                                    </el-row>
+                                                </el-col>
+                                            </el-row>
+                                        </el-card>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col>
+                                        <div style="flex-grow: 1; display: flex; justify-content: center;">
+                                            <el-pagination background layout="prev, pager, next" :page-size=10
+                                                :total=totalGroup @current-change="groupCurrentChange" />
+                                        </div>
+                                    </el-col>
+                                </el-row>
+                            </el-tab-pane>
                         </el-tabs>
                     </el-col>
                 </el-row>
@@ -102,10 +155,12 @@ export default {
     data() {
         return {
             keyword: null,
-            bookList: {},
+            bookList: [],
             totalBook: null,
-            userList: {},
-            totalUser: null
+            userList: [],
+            totalUser: null,
+            groupList: [],
+            totalGroup: null
         }
     },
     async mounted() {
@@ -116,6 +171,9 @@ export default {
         const { data: userRes } = await this.$http.get('/user/searchUser?keyword=' + this.keyword + '&page=1')
         this.userList = userRes.data.userList
         this.totalUser = userRes.data.totalUser
+        const { data: groupRes } = await this.$http.get('/group/searchGroup?keyword=' + this.keyword + '&page=1')
+        this.groupList = groupRes.data.groupList
+        this.totalGroup = groupRes.data.totalGroup
     },
     methods: {
         async bookCurrentChange(page) {
@@ -128,6 +186,11 @@ export default {
             this.userList = userRes.data.userList
             this.totalUser = userRes.data.totalUser
         },
+        async groupCurrentChange(page) {
+            const { data: groupRes } = await this.$http.get('/group/searchGroup?keyword=' + this.keyword + '&page=' + page)
+            this.groupList = groupRes.data.groupList
+            this.totalGroup = groupRes.data.totalGroup
+        },
         gotoBook(id) {
             const url = String(window.location.href)
             const baseURL = url.split('/')[0]
@@ -138,6 +201,12 @@ export default {
             const url = String(window.location.href)
             const baseURL = url.split('/')[0]
             const newURL = baseURL + '/user?userId=' + String(id)
+            window.location.href = newURL
+        },
+        gotoGroup(id) {
+            const url = String(window.location.href)
+            const baseURL = url.split('/')[0]
+            const newURL = baseURL + '/group?groupId=' + String(id)
             window.location.href = newURL
         }
     }

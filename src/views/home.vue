@@ -176,8 +176,9 @@
     <el-dialog v-model="changeAvatarDialogVisible" title="上传头像" width="30%">
         <div class="dialog">
             <el-upload class="avatar-uploader" ref="uploadRef" action="http://localhost:8080/user/uploadAvatar"
-                :headers=headers :show-file-list="false" accept=".png, .jpeg, .jpg, .gif" :on-success="handleSuccess"
-                :on-error="handleError" :on-exceed="handleExceed" :before-upload="beforeUpload" :limit=1>
+                :headers=headers :show-file-list="false" accept=".png, .jpeg, .jpg, .gif, .PNG, .JPEG, .JPG, .GIF"
+                :on-success="handleSuccess" :on-error="handleError" :on-exceed="handleExceed" :before-upload="beforeUpload"
+                :limit=1>
                 <img v-if="avatarUrl" :src="avatarUrl" class="avatar" />
                 <el-icon v-else class="avatar-uploader-icon">
                     <Plus />
@@ -335,6 +336,8 @@ export default {
         this.userInfo.email = JSON.parse(sessionStorage.getItem('email'))
         this.userInfo.location = JSON.parse(sessionStorage.getItem('location'))
         this.userInfo.bio = JSON.parse(sessionStorage.getItem('bio'))
+        this.userInfo.groupId = JSON.parse(sessionStorage.getItem('groupId'))
+        this.userInfo.groupManager = JSON.parse(sessionStorage.getItem('groupManager'))
         if (JSON.parse(sessionStorage.getItem('avatar')) !== null) {
             this.avatarUrl = this.$http.defaults.baseURL + JSON.parse(sessionStorage.getItem('avatar'))
         }
@@ -426,7 +429,7 @@ export default {
             this.$refs.uploadRef.submit()
         },
         beforeUpload(rawFile) {
-            if (rawFile.type !== 'image/png' || rawFile.type !== 'image/jpeg' || rawFile.type !== 'image/gif') {
+            if (rawFile.type !== 'image/png' && rawFile.type !== 'image/jpeg' && rawFile.type !== 'image/gif') {
                 ElMessage({
                     message: '文件格式不正确',
                     type: 'error'

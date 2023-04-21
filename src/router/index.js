@@ -41,6 +41,14 @@ const router = createRouter({
     name: 'bookList',
     path: '/bookList',
     component: () => import('../views/bookList.vue')
+  }, {
+    name: 'groupList',
+    path: '/groupList',
+    component: () => import('../views/groupList.vue')
+  }, {
+    name: 'myGroup',
+    path: '/myGroup',
+    component: () => import('../views/myGroup.vue')
   }]
 })
 
@@ -66,6 +74,8 @@ router.beforeEach(async (to, from) => {
         sessionStorage.setItem('email', JSON.stringify(res.data.userInfo.email))
         sessionStorage.setItem('location', JSON.stringify(res.data.userInfo.location))
         sessionStorage.setItem('bio', JSON.stringify(res.data.userInfo.bio))
+        sessionStorage.setItem('groupId', JSON.stringify(res.data.userInfo.groupId))
+        sessionStorage.setItem('groupManager', JSON.stringify(res.data.userInfo.groupManager))
       } else {
         console.log(res.message)
       }
