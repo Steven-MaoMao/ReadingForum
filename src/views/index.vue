@@ -1,7 +1,7 @@
 <template>
     <el-container>
         <el-header height="auto" style="padding: 20px; box-shadow: var(--el-box-shadow-lighter);">
-            <myHead></myHead>
+            <myHead :avatar="this.avatar"></myHead>
         </el-header>
         <el-container>
             <el-aside width="350px" style="padding: 20px;">
@@ -47,7 +47,10 @@
             <el-main>
                 <el-row class="block">
                     <el-col>
-                        <div style="font-size: x-large; font-weight: 600; margin-bottom: 20px;">Top Three Books</div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                            <div style="font-size: x-large; font-weight: 600;">Top Three Books</div>
+                            <el-link @click="gotoBookList">更多>></el-link>
+                        </div>
                         <el-carousel type="card" height="600px">
                             <el-carousel-item v-for="book in this.topThreeBook" :key="book">
                                 <el-card @click="gotoBook(book.id)"
@@ -77,7 +80,10 @@
                 </el-row>
                 <el-row class="block">
                     <el-col>
-                        <div style="font-size: x-large; font-weight: 600; margin-bottom: 20px;">Latest Five Books</div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                            <div style="font-size: x-large; font-weight: 600;">Latest Five Books</div>
+                            <el-link @click="gotoBookList">更多>></el-link>
+                        </div>
                         <el-row>
                             <el-col>
                                 <ul class="latestFiveBookList">
@@ -111,7 +117,10 @@
                 </el-row>
                 <el-row class="block">
                     <el-col>
-                        <div style="font-size: x-large; font-weight: 600; margin-bottom: 20px;">Recommended Books</div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                            <div style="font-size: x-large; font-weight: 600;">Recommended Books</div>
+                            <el-link @click="gotoBookList">更多>></el-link>
+                        </div>
                         <el-row>
                             <el-col>
                                 <ul class="latestFiveBookList">
@@ -143,6 +152,39 @@
                         </el-row>
                     </el-col>
                 </el-row>
+                <el-row class="block" v-if="this.groupId < 1">
+                    <el-col>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                            <div style="font-size: x-large; font-weight: 600;">Top Five Groups</div>
+                            <el-link @click="gotoGroupList">更多>></el-link>
+                        </div>
+                        <el-row>
+                            <el-col>
+                                <ul class="latestFiveBookList">
+                                    <li class="latestFiveBook" type="none" v-for="group in topFiveGroup">
+                                        <el-card @click="gotogroup(group.id)" style="margin: 10px; height: 250px;"
+                                            :body-style="{ 'margin': '20px', 'padding': '0px', 'display': 'flex', 'flex-direction': 'column', 'align-items': 'center' }">
+                                            <el-avatar :src="this.$http.defaults.baseURL + group.avatar" :size="100"
+                                                style="margin-bottom: 10px;">{{ group.username
+                                                }}</el-avatar>
+                                            <el-descriptions size="small" :column=1
+                                                style="margin-left: 20px; margin-bottom: 10px;">
+                                                <el-descriptions-item label="社团名">{{ group.name
+                                                }}</el-descriptions-item>
+                                                <el-descriptions-item label="创建者" v-if="group.nickname">{{ group.nickname
+                                                }}</el-descriptions-item>
+                                                <el-descriptions-item label="创建者" v-else>{{ group.username
+                                                }}</el-descriptions-item>
+                                                <el-descriptions-item label="创建时间">{{ group.createTime
+                                                }}</el-descriptions-item>
+                                            </el-descriptions>
+                                        </el-card>
+                                    </li>
+                                </ul>
+                            </el-col>
+                        </el-row>
+                    </el-col>
+                </el-row>
             </el-main>
         </el-container>
     </el-container>
@@ -160,7 +202,10 @@ export default {
             topThreeBook: [],
             topFiveTag: [],
             latestFiveBook: [],
-            recommendBook: []
+            recommendBook: [],
+            topFiveGroup: [],
+            avatar: JSON.parse(sessionStorage.getItem('avatar')),
+            groupId: JSON.parse(sessionStorage.getItem('groupId'))
         }
     },
     async mounted() {
@@ -174,6 +219,8 @@ export default {
         this.latestFiveBook = latestFiveBookRes.data.bookList
         const { data: recommendBookRes } = await this.$http.get('/recommend/recommendByFavourite')
         this.recommendBook = recommendBookRes.data.bookList
+        const { data: topFiveGroupRes } = await this.$http.get('/group/topFiveGroup')
+        this.topFiveGroup = topFiveGroupRes.data.groupList
     },
     methods: {
         gotoBook(id) {
@@ -188,6 +235,18 @@ export default {
             const newURL = baseURL + '/user?userId=' + String(id)
             window.location.href = newURL
         },
+        gotoBookList() {
+            this.$router.push('/bookList')
+        },
+        gotoGroupList() {
+            this.$router.push('/groupList')
+        },
+        gotogroup(groupId) {
+            const url = String(window.location.href)
+            const baseURL = url.split('/')[0]
+            const newURL = baseURL + '/group?groupId=' + String(groupId)
+            window.location.href = newURL
+        }
     }
 }
 </script>

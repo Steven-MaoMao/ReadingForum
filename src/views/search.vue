@@ -1,7 +1,7 @@
 <template>
     <el-container>
         <el-header height="auto" style="padding: 20px; box-shadow: var(--el-box-shadow-lighter);">
-            <myHead></myHead>
+            <myHead :avatar="this.avatar"></myHead>
         </el-header>
         <div class="container">
             <el-main>
@@ -160,7 +160,8 @@ export default {
             userList: [],
             totalUser: null,
             groupList: [],
-            totalGroup: null
+            totalGroup: null,
+            avatar: JSON.parse(sessionStorage.getItem('avatar'))
         }
     },
     async mounted() {

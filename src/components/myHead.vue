@@ -18,7 +18,7 @@
         <el-col :span="2" style="display: flex; justify-content: center; align-items: center;">
             <el-popover>
                 <template #reference>
-                    <el-avatar :src="this.$http.defaults.baseURL + this.userInfo.avatar">{{ this.userInfo.username
+                    <el-avatar :src="this.$http.defaults.baseURL + this.avatar">{{ this.userInfo.username
                     }}</el-avatar>
                 </template>
                 <el-row>
@@ -47,6 +47,11 @@
                         <el-button @click="this.$router.push('/home')">个人中心</el-button>
                     </el-col>
                 </el-row>
+                <el-row justify="center" v-if="this.userInfo.groupId != 0">
+                    <el-col :span="24" style="display: flex; justify-content: center; margin-top: 10px;">
+                        <el-button @click="this.$router.push('/myGroup')">我的社团</el-button>
+                    </el-col>
+                </el-row>
                 <el-row justify="center">
                     <el-col :span="24" style="display: flex; justify-content: center; margin-top: 10px;">
                         <el-button type="danger" @click="logout">退出登录</el-button>
@@ -70,6 +75,7 @@
 <script>
 import { ElMessage } from 'element-plus'
 export default {
+    props: ['avatar'],
     data() {
         return {
             userInfo: {},

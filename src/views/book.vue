@@ -1,7 +1,7 @@
 <template>
     <el-container>
         <el-header height="auto" style="padding: 20px; box-shadow: var(--el-box-shadow-lighter);">
-            <myHead></myHead>
+            <myHead :avatar="this.avatar"></myHead>
         </el-header>
         <div class="container">
             <el-main>
@@ -22,8 +22,8 @@
                                     <el-descriptions-item label="ISBN：">{{ bookInfo.ISBN }}</el-descriptions-item>
                                     <el-descriptions-item label="标签：">
                                         <div style="display: flex; flex-direction: column; width: 60%;">
-                                            <el-tag v-for="tag in bookInfo.tags" :round="true" style="margin-bottom: 5px; user-select: none;"
-                                                @click="gotoTag(tag.id)">
+                                            <el-tag v-for="tag in bookInfo.tags" :round="true"
+                                                style="margin-bottom: 5px; user-select: none;" @click="gotoTag(tag.id)">
                                                 {{ tag.name }}
                                             </el-tag>
                                         </div>
@@ -215,7 +215,8 @@ export default {
             },
             myComment: null,
             bookComment: [],
-            totalComment: null
+            totalComment: null,
+            avatar: JSON.parse(sessionStorage.getItem('avatar'))
         }
     },
     async mounted() {

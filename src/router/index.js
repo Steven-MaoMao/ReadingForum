@@ -28,7 +28,7 @@ const router = createRouter({
       if (to.query.userId == JSON.parse(sessionStorage.getItem('id'))) {
         return { name: 'home' }
       }
-    },
+    }
   }, {
     name: 'book',
     path: '/book',
@@ -48,7 +48,21 @@ const router = createRouter({
   }, {
     name: 'myGroup',
     path: '/myGroup',
-    component: () => import('../views/myGroup.vue')
+    component: () => import('../views/myGroup.vue'),
+    beforeEnter: (to, from) => {
+      if (JSON.parse(sessionStorage.getItem('groupId') == 0)) {
+        return { name: 'groupList' }
+      }
+    }
+  }, {
+    name: 'group',
+    path: '/group',
+    component: () => import('../views/group.vue'),
+    beforeEnter: (to, from) => {
+      if (to.query.groupId == JSON.parse(sessionStorage.getItem('groupId'))) {
+        return { name: 'myGroup' }
+      }
+    }
   }]
 })
 
