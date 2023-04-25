@@ -3,59 +3,114 @@
         <el-header height="auto" style="padding: 20px; box-shadow: var(--el-box-shadow-lighter);">
             <myHead :avatar="avatar"></myHead>
         </el-header>
-        <div class="container">
-            <el-main>
-                <el-row class="block">
-                    <el-col>
-                        <el-row justify="center" style="margin-bottom: 40px;">
-                            <el-col :span="20">
-                                <el-avatar :size="100" shape="square" fit="cover"
-                                    :src="this.$http.defaults.baseURL + this.groupInfo.avatar">
-                                    {{ this.groupInfo.username }}
-                                </el-avatar>
-                            </el-col>
-                            <el-col :span="2">
-                                <el-button @click="changeAvatarDialogVisible = true"
-                                    :disabled="!this.groupManager">上传头像</el-button>
-                            </el-col>
-                        </el-row>
-                        <el-row justify="center">
-                            <el-col :span="20">
-                                <el-descriptions title="社团信息">
-                                    <el-descriptions-item label="社团名">{{ groupInfo.name }}</el-descriptions-item>
-                                    <el-descriptions-item label="创建人" v-if="groupInfo.nickname">{{ groupInfo.nickname
-                                    }}</el-descriptions-item>
-                                    <el-descriptions-item label="创建人" v-else>{{ groupInfo.username }}</el-descriptions-item>
-                                    <el-descriptions-item label="创建时间">{{ groupInfo.createTime }}</el-descriptions-item>
-                                    <el-descriptions-item label="社团简介">{{ groupInfo.introduction }}</el-descriptions-item>
-                                </el-descriptions>
-                            </el-col>
-                            <el-col :span="2"
-                                style="display: flex; flex-direction: column; justify-content: space-between;">
-                                <el-row>
-                                    <el-col>
-                                        <el-button @click="changeGroupIntroductionDialogVisible = true"
-                                            :disabled="!this.groupManager">修改简介</el-button>
-                                    </el-col>
-                                </el-row>
-                                <el-row>
-                                    <el-col>
-                                        <el-button type="danger" @click="dropout"
-                                            :disabled="this.groupInfo.createUser === this.userId">退出社团</el-button>
-                                    </el-col>
-                                </el-row>
-                                <el-row>
-                                    <el-col>
-                                        <el-button type="danger" @click="dissolve"
-                                            :disabled="this.groupInfo.createUser !== this.userId">解散社团</el-button>
-                                    </el-col>
-                                </el-row>
-                            </el-col>
-                        </el-row>
-                    </el-col>
-                </el-row>
-            </el-main>
+        <div class="notice">
+            <marquee behavior="scroll" direction="left" scrollamount="5">
+                社团公告：{{ this.groupInfo.notice }}
+            </marquee>
         </div>
+        <el-container>
+            <el-aside width="350px" style="margin-top: 20px;">
+                <div class="container">
+                    <el-row class="block" style="width: 90%;">
+                        <el-col>
+                            <el-card shadow="never">
+                                <template #header>
+                                    <div>
+                                        <span style="font-size: larger; font-weight: 600;">Group Members</span>
+                                    </div>
+                                </template>
+                                <el-row v-for="user in groupMember" :key="user">
+                                    <el-col :span="6">
+                                        <el-avatar :src="this.$http.defaults.baseURL + user.avatar">{{
+                                            user.username
+                                        }}</el-avatar>
+                                    </el-col>
+                                    <el-col :span="12">
+                                        <el-link :href="this.baseLocation + '/user?userId=' + String(user.id)"
+                                            v-if="user.nickname" style="height: 100%;">{{ user.nickname }}</el-link>
+                                        <el-link :href="this.baseLocation + '/user?userId=' + String(user.id)" v-else
+                                            style="height: 100%;">{{
+                                                user.username }}</el-link>
+                                    </el-col>
+                                    <el-col :span="6">
+                                        <el-button @click="setGroupManager(user.id)" v-if="user.groupManager === false"
+                                            style="height: 100%;"
+                                            :disabled="this.groupInfo.createUser !== this.userId || user.id === this.groupInfo.createUser">
+                                            <el-icon>
+                                                <Star />
+                                            </el-icon>
+                                        </el-button>
+                                        <el-button type="primary" @click="dismissGroupManager(user.id)" v-else
+                                            style="height: 100%;"
+                                            :disabled="this.groupInfo.createUser !== this.userId || user.id === this.groupInfo.createUser">
+                                            <el-icon>
+                                                <StarFilled />
+                                            </el-icon>
+                                        </el-button>
+                                    </el-col>
+                                    <el-divider />
+                                </el-row>
+                            </el-card>
+                        </el-col>
+                    </el-row>
+                </div>
+            </el-aside>
+            <div class="container">
+                <el-main>
+                    <el-row class="block">
+                        <el-col>
+                            <el-row justify="center" style="margin-bottom: 40px;">
+                                <el-col :span="20">
+                                    <el-avatar :size="100" shape="square" fit="cover"
+                                        :src="this.$http.defaults.baseURL + this.groupInfo.avatar">
+                                        {{ this.groupInfo.username }}
+                                    </el-avatar>
+                                </el-col>
+                                <el-col :span="2">
+                                    <el-button @click="changeAvatarDialogVisible = true"
+                                        :disabled="!this.groupManager">上传头像</el-button>
+                                </el-col>
+                            </el-row>
+                            <el-row justify="center">
+                                <el-col :span="20">
+                                    <el-descriptions title="社团信息">
+                                        <el-descriptions-item label="社团名">{{ groupInfo.name }}</el-descriptions-item>
+                                        <el-descriptions-item label="创建人" v-if="groupInfo.nickname">{{ groupInfo.nickname
+                                        }}</el-descriptions-item>
+                                        <el-descriptions-item label="创建人" v-else>{{ groupInfo.username
+                                        }}</el-descriptions-item>
+                                        <el-descriptions-item label="创建时间">{{ groupInfo.createTime }}</el-descriptions-item>
+                                        <el-descriptions-item label="社团简介">{{ groupInfo.introduction
+                                        }}</el-descriptions-item>
+                                    </el-descriptions>
+                                </el-col>
+                                <el-col :span="2"
+                                    style="display: flex; flex-direction: column; justify-content: space-between;">
+                                    <el-row>
+                                        <el-col>
+                                            <el-button @click="changeGroupIntroductionDialogVisible = true"
+                                                :disabled="!this.groupManager">修改简介</el-button>
+                                        </el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <el-col>
+                                            <el-button type="danger" @click="dropout"
+                                                :disabled="this.groupInfo.createUser === this.userId">退出社团</el-button>
+                                        </el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <el-col>
+                                            <el-button type="danger" @click="dissolve"
+                                                :disabled="this.groupInfo.createUser !== this.userId">解散社团</el-button>
+                                        </el-col>
+                                    </el-row>
+                                </el-col>
+                            </el-row>
+                        </el-col>
+                    </el-row>
+                </el-main>
+            </div>
+        </el-container>
     </el-container>
     <el-dialog v-model="changeAvatarDialogVisible" title="上传头像" width="30%">
         <div class="dialog">
@@ -96,12 +151,13 @@
 
 <script>
 import myHead from '../components/myHead.vue'
-import { Plus } from '@element-plus/icons-vue'
+import { Plus, Star, StarFilled } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 export default {
     components: { myHead },
     data() {
         return {
+            userId: JSON.parse(sessionStorage.getItem('id')),
             groupId: null,
             groupManager: false,
             groupInfo: {},
@@ -112,7 +168,9 @@ export default {
             },
             avatar: JSON.parse(sessionStorage.getItem('avatar')),
             userId: null,
-            newIntroduction: null
+            newIntroduction: null,
+            groupMember: [],
+            baseLocation: null
         }
     },
     async mounted() {
@@ -123,6 +181,9 @@ export default {
         this.groupInfo = groupInfoRes.data.groupInfo
         this.userId = JSON.parse(sessionStorage.getItem('id'))
         this.newIntroduction = this.groupInfo.introduction
+        const { data: groupMemberRes } = await this.$http.get('/user/groupMember')
+        this.groupMember = groupMemberRes.data.userList
+        this.baseLocation = String(window.location.href).split('/')[0]
     },
     methods: {
         handleSuccess(responce, uploadFile, uploadFiles) {
@@ -220,12 +281,59 @@ export default {
         },
         onCancelChangeIntroduction() {
             this.newIntroduction = this.groupInfo.introduction
+        },
+        async setGroupManager(id) {
+            const { data: res } = await this.$http.put('/user/setGroupManager?userId=' + String(id))
+            if (res.code === 1) {
+                ElMessage({
+                    message: res.message,
+                    type: 'success'
+                })
+                for (var member in this.groupMember) {
+                    if (this.groupMember[member].id === id) {
+                        this.groupMember[member].groupManager = true
+                        break
+                    }
+                }
+            } else {
+                ElMessage({
+                    message: res.message,
+                    type: 'error'
+                })
+            }
+        },
+        async dismissGroupManager(id) {
+            const { data: res } = await this.$http.put('/user/dismissGroupManager?userId=' + String(id))
+            if (res.code === 1) {
+                ElMessage({
+                    message: res.message,
+                    type: 'success'
+                })
+                for (var member in this.groupMember) {
+                    if (this.groupMember[member].id === id) {
+                        this.groupMember[member].groupManager = false
+                        break
+                    }
+                }
+            } else {
+                ElMessage({
+                    message: res.message,
+                    type: 'error'
+                })
+            }
         }
     }
 }
 </script>
 
 <style scoped>
+.notice {
+    margin-top: 20px;
+    padding: 10px;
+    font-size: larger;
+    box-shadow: var(--el-box-shadow-lighter);
+}
+
 .container {
     width: 100%;
     display: flex;
@@ -234,7 +342,7 @@ export default {
 }
 
 .el-main {
-    width: 70%;
+    width: 100%;
 }
 
 .block {
