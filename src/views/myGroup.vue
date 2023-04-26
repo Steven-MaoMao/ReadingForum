@@ -94,6 +94,12 @@
                                     </el-row>
                                     <el-row>
                                         <el-col>
+                                            <el-button @click="changeGroupNoticeDialogVisible = true"
+                                                :disabled="!this.groupManager">修改公告</el-button>
+                                        </el-col>
+                                    </el-row>
+                                    <el-row>
+                                        <el-col>
                                             <el-button type="danger" @click="dropout"
                                                 :disabled="this.groupInfo.createUser === this.userId">退出社团</el-button>
                                         </el-col>
@@ -147,6 +153,26 @@
             </el-row>
         </div>
     </el-dialog>
+    <el-dialog v-model="changeGroupNoticeDialogVisible" title="修改简介" width="30%">
+        <div class="dialog">
+            <el-row justify="center" style="width: 70%;">
+                <el-col :span="6">
+                    <div style="margin-bottom: 20px;">社团公告</div>
+                </el-col>
+                <el-col :span="18">
+                    <el-input type="textarea" v-model="this.newNotice" />
+                </el-col>
+            </el-row>
+            <el-row justify="center" style="width: 100%; margin-top: 20px;">
+                <el-col :span="7" style="display: flex; justify-content: center;">
+                    <el-button type="primary" @click="onChangeNotice">确认</el-button>
+                </el-col>
+                <el-col :span="7" style="display: flex; justify-content: center;">
+                    <el-button @click="onCancelChangeNotice">取消</el-button>
+                </el-col>
+            </el-row>
+        </div>
+    </el-dialog>
 </template>
 
 <script>
@@ -163,12 +189,14 @@ export default {
             groupInfo: {},
             changeAvatarDialogVisible: false,
             changeGroupIntroductionDialogVisible: false,
+            changeGroupNoticeDialogVisible: false,
             headers: {
                 token: null,
             },
             avatar: JSON.parse(sessionStorage.getItem('avatar')),
             userId: null,
             newIntroduction: null,
+            newNotice: null,
             groupMember: [],
             baseLocation: null
         }
@@ -181,6 +209,7 @@ export default {
         this.groupInfo = groupInfoRes.data.groupInfo
         this.userId = JSON.parse(sessionStorage.getItem('id'))
         this.newIntroduction = this.groupInfo.introduction
+        this.newNotice = this.groupInfo.notice
         const { data: groupMemberRes } = await this.$http.get('/user/groupMember')
         this.groupMember = groupMemberRes.data.userList
         this.baseLocation = String(window.location.href).split('/')[0]
@@ -281,6 +310,25 @@ export default {
         },
         onCancelChangeIntroduction() {
             this.newIntroduction = this.groupInfo.introduction
+        },
+        async onChangeNotice() {
+            this.groupInfo.notice = this.newNotice
+            const { data: res } = await this.$http.put('/group/uploadGroup', this.groupInfo)
+            if (res.code === 1) {
+                ElMessage({
+                    message: res.message,
+                    type: 'success'
+                })
+                this.changeGroupNoticeDialogVisible = false
+            } else {
+                ElMessage({
+                    message: res.message,
+                    type: 'error'
+                })
+            }
+        },
+        onCancelChangeNotice() {
+            this.newNotice = this.groupInfo.notice
         },
         async setGroupManager(id) {
             const { data: res } = await this.$http.put('/user/setGroupManager?userId=' + String(id))
