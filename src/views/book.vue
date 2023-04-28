@@ -88,6 +88,13 @@
                                         <el-button v-else @click="disFavourite" type="danger">取消收藏</el-button>
                                     </el-col>
                                 </el-row>
+                                <el-row v-if="this.groupManager" style="margin-top: 10px;">
+                                    <el-col>
+                                        <el-button v-if="this.isGroupFavourite === false"
+                                            @click="groupFavourite">加入社团收藏</el-button>
+                                        <el-button v-else @click="disGroupFavourite" type="danger">移出社团收藏</el-button>
+                                    </el-col>
+                                </el-row>
                             </el-col>
                         </el-row>
                     </el-col>
@@ -216,10 +223,15 @@ export default {
             myComment: null,
             bookComment: [],
             totalComment: null,
-            avatar: JSON.parse(sessionStorage.getItem('avatar'))
+            avatar: JSON.parse(sessionStorage.getItem('avatar')),
+            groupId: null,
+            groupManager: false,
+            isGroupFavourite: false
         }
     },
     async mounted() {
+        this.groupId = JSON.parse(sessionStorage.getItem('groupId'))
+        this.groupManager = JSON.parse(sessionStorage.getItem('groupManager'))
         this.bookId = this.$route.query.bookId
         const { data: res } = await this.$http.get('/book/bookInfoById?id=' + this.bookId)
         this.bookInfo = res.data.bookInfo
@@ -233,6 +245,10 @@ export default {
         const { data: isFavouriteRes } = await this.$http.get('/book/isFavourite?bookId=' + this.bookId)
         if (isFavouriteRes.code === 1) {
             this.isFavourite = true
+        }
+        const { data: isGroupFavouriteRes } = await this.$http.get('/group/isGroupFavourite?bookId=' + this.bookId + '&groupId=' + this.groupId)
+        if (isFavouriteRes.code === 1) {
+            this.isGroupFavourite = true
         }
     },
     methods: {
@@ -259,6 +275,36 @@ export default {
                     type: 'success'
                 })
                 this.isFavourite = false
+            } else {
+                ElMessage({
+                    message: res.message,
+                    type: 'error'
+                })
+            }
+        },
+        async groupFavourite() {
+            const { data: res } = await this.$http.post('/group/groupFavourite?groupId=' + String(this.groupId) + '&bookId=' + String(this.bookId))
+            if (res.code === 1) {
+                ElMessage({
+                    message: res.message,
+                    type: 'success'
+                })
+                this.isGroupFavourite = true
+            } else {
+                ElMessage({
+                    message: res.message,
+                    type: 'error'
+                })
+            }
+        },
+        async disGroupFavourite() {
+            const { data: res } = await this.$http.delete('/group/deleteGroupFavourite?groupId=' + String(this.groupId) + '&bookId=' + String(this.bookId))
+            if (res.code === 1) {
+                ElMessage({
+                    message: res.message,
+                    type: 'success'
+                })
+                this.isGroupFavourite = false
             } else {
                 ElMessage({
                     message: res.message,

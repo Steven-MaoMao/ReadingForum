@@ -86,25 +86,25 @@
                                 </el-col>
                                 <el-col :span="2"
                                     style="display: flex; flex-direction: column; justify-content: space-between;">
-                                    <el-row>
+                                    <el-row style="padding-bottom: 5px;">
                                         <el-col>
                                             <el-button @click="changeGroupIntroductionDialogVisible = true"
                                                 :disabled="!this.groupManager">修改简介</el-button>
                                         </el-col>
                                     </el-row>
-                                    <el-row>
+                                    <el-row style="padding-bottom: 5px;">
                                         <el-col>
                                             <el-button @click="changeGroupNoticeDialogVisible = true"
                                                 :disabled="!this.groupManager">修改公告</el-button>
                                         </el-col>
                                     </el-row>
-                                    <el-row>
+                                    <el-row style="padding-bottom: 5px;">
                                         <el-col>
                                             <el-button type="danger" @click="dropout"
                                                 :disabled="this.groupInfo.createUser === this.userId">退出社团</el-button>
                                         </el-col>
                                     </el-row>
-                                    <el-row>
+                                    <el-row style="padding-bottom: 5px;">
                                         <el-col>
                                             <el-button type="danger" @click="dissolve"
                                                 :disabled="this.groupInfo.createUser !== this.userId">解散社团</el-button>
@@ -112,6 +112,71 @@
                                     </el-row>
                                 </el-col>
                             </el-row>
+                        </el-col>
+                    </el-row>
+                    <el-row class="block">
+                        <el-col :span="3" style="padding-top: 10px; padding-left: 10px;">
+                            <el-menu default-active="1" @select="selectMenu">
+                                <el-menu-item index="1">
+                                    <el-icon>
+                                        <Reading />
+                                    </el-icon>
+                                    <span style="font-size: larger;">收藏书籍</span>
+                                </el-menu-item>
+                                <el-menu-item index="2">
+                                    <el-icon>
+                                        <Reading />
+                                    </el-icon>
+                                    <span>test</span>
+                                </el-menu-item>
+                            </el-menu>
+                        </el-col>
+                        <el-col :span="20" :offset="1">
+                            <div v-if="this.selectMenuIndex == 1">
+                                <el-row>
+                                    <el-col>
+                                        <ul class="groupFavouriteList">
+                                            <li class="groupFavourite" type="none"
+                                                v-for="groupFavourite in groupFavouriteList">
+                                                <el-card @click="gotoBook(groupFavourite.id)"
+                                                    style="margin: 10px; height: 500px;"
+                                                    :body-style="{ 'margin': '20px', 'padding': '0px', 'display': 'flex', 'flex-direction': 'column', 'align-items': 'center' }">
+                                                    <el-image :src="this.$http.defaults.baseURL + groupFavourite.bookCover"
+                                                        fit="cover" style="width: 100%; height: 250px;">
+                                                    </el-image>
+                                                    <el-descriptions size="small" :column=1 style="margin-left: 20px;">
+                                                        <el-descriptions-item label="书名">{{ groupFavourite.name
+                                                        }}</el-descriptions-item>
+                                                        <el-descriptions-item label="作者">{{ groupFavourite.author
+                                                        }}</el-descriptions-item>
+                                                        <el-descriptions-item label="出版社">{{ groupFavourite.publisher
+                                                        }}</el-descriptions-item>
+                                                        <el-descriptions-item label="标签">
+                                                            <div style="display: flex; flex-direction: column;">
+                                                                <el-tag v-for="tag in groupFavourite.tags" :round="true"
+                                                                    size="small">
+                                                                    {{ tag.name }}
+                                                                </el-tag>
+                                                            </div>
+                                                        </el-descriptions-item>
+                                                    </el-descriptions>
+                                                </el-card>
+                                            </li>
+                                        </ul>
+                                    </el-col>
+                                </el-row>
+                                <el-row style="margin-top: 20px;">
+                                    <el-col>
+                                        <div style="flex-grow: 1; display: flex; justify-content: center;">
+                                            <el-pagination background layout="prev, pager, next" :page-size=16
+                                                :total=totalGroupFavourite @current-change="groupFavouriteCurrentChange" />
+                                        </div>
+                                    </el-col>
+                                </el-row>
+                            </div>
+                            <div v-else-if="this.selectMenuIndex == 2">
+                                test
+                            </div>
                         </el-col>
                     </el-row>
                 </el-main>
@@ -177,7 +242,7 @@
 
 <script>
 import myHead from '../components/myHead.vue'
-import { Plus, Star, StarFilled } from '@element-plus/icons-vue'
+import { Plus, Star, StarFilled, Reading } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 export default {
     components: { myHead },
@@ -198,7 +263,10 @@ export default {
             newIntroduction: null,
             newNotice: null,
             groupMember: [],
-            baseLocation: null
+            baseLocation: null,
+            selectMenuIndex: 1,
+            groupFavouriteList: [],
+            totalGroupFavourite: null
         }
     },
     async mounted() {
@@ -213,6 +281,9 @@ export default {
         const { data: groupMemberRes } = await this.$http.get('/user/groupMember')
         this.groupMember = groupMemberRes.data.userList
         this.baseLocation = String(window.location.href).split('/')[0]
+        const { data: groupFavouriteRes } = await this.$http.get('/group/groupFavouriteByIdPage?groupId=' + this.groupId + '&page=1')
+        this.groupFavouriteList = groupFavouriteRes.data.bookList
+        this.totalGroupFavourite = groupFavouriteRes.data.num
     },
     methods: {
         handleSuccess(responce, uploadFile, uploadFiles) {
@@ -369,6 +440,25 @@ export default {
                     type: 'error'
                 })
             }
+        },
+        async selectMenu(index) {
+            this.selectMenuIndex = index
+            if (index == 1) {
+                const { data: groupFavouriteRes } = await this.$http.get('/group/groupFavouriteByIdPage?groupId=' + this.groupId + '&page=1')
+                this.groupFavouriteList = groupFavouriteRes.data.bookList
+                this.totalGroupFavourite = groupFavouriteRes.data.num
+            }
+        },
+        async groupFavouriteCurrentChange(page) {
+            const { data: groupFavouriteRes } = await this.$http.get('/group/groupFavouriteByIdPage?groupId=' + this.groupId + '&page=' + String(page))
+            this.groupFavouriteList = groupFavouriteRes.data.bookList
+            this.totalGroupFavourite = groupFavouriteRes.data.num
+        },
+        gotoBook(id) {
+            const url = String(window.location.href)
+            const baseURL = url.split('/')[0]
+            const newURL = baseURL + '/book?bookId=' + String(id)
+            window.location.href = newURL
         }
     }
 }
@@ -429,5 +519,19 @@ export default {
     width: 200px;
     height: 200px;
     text-align: center;
+}
+
+.groupFavouriteList {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 0%;
+    padding: 0%;
+}
+
+.groupFavourite {
+    width: 25%;
 }
 </style>
