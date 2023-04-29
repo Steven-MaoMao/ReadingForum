@@ -247,7 +247,7 @@ export default {
             this.isFavourite = true
         }
         const { data: isGroupFavouriteRes } = await this.$http.get('/group/isGroupFavourite?bookId=' + this.bookId + '&groupId=' + this.groupId)
-        if (isFavouriteRes.code === 1) {
+        if (isGroupFavouriteRes.code === 1) {
             this.isGroupFavourite = true
         }
     },

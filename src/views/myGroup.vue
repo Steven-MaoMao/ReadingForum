@@ -115,24 +115,62 @@
                         </el-col>
                     </el-row>
                     <el-row class="block">
-                        <el-col :span="3" style="padding-top: 10px; padding-left: 10px;">
-                            <el-menu default-active="1" @select="selectMenu">
-                                <el-menu-item index="1">
+                        <el-col :span="5" style="padding-top: 10px; padding-left: 10px;">
+                            <el-menu default-active="-1-0" @select="selectMenu">
+                                <el-sub-menu index="-1">
+                                    <template #title>
+                                        <el-icon>
+                                            <ChatLineSquare />
+                                        </el-icon>
+                                        <span>全体成员</span>
+                                    </template>
+                                    <el-menu-iten-group>
+                                        <el-menu-item index="-1-0">
+                                            <el-icon>
+                                                <Reading />
+                                            </el-icon>
+                                            <span>收藏书籍</span>
+                                        </el-menu-item>
+                                    </el-menu-iten-group>
+                                </el-sub-menu>
+                                <el-sub-menu v-for="(subgroup, index) in subgroupList" :index="index">
+                                    <template #title>
+                                        <el-icon>
+                                            <ChatLineSquare />
+                                        </el-icon>
+                                        <span>{{ subgroup.name }}</span>
+                                    </template>
+                                    <el-menu-iten-group>
+                                        <el-menu-item :index="index + '-0'">
+                                            <el-icon>
+                                                <User />
+                                            </el-icon>
+                                            <span>小组成员</span>
+                                        </el-menu-item>
+                                        <el-menu-item :index="index + '-00'">
+                                            <el-icon>
+                                                <Plus />
+                                            </el-icon>
+                                            <span>添加组件</span>
+                                        </el-menu-item>
+                                        <el-menu-item :index="index + '-000'">
+                                            <el-icon>
+                                                <Delete />
+                                            </el-icon>
+                                            <span>删除组件</span>
+                                        </el-menu-item>
+                                    </el-menu-iten-group>
+                                </el-sub-menu>
+                                <el-menu-item index="-2">
                                     <el-icon>
-                                        <Reading />
+                                        <Plus />
                                     </el-icon>
-                                    <span style="font-size: larger;">收藏书籍</span>
-                                </el-menu-item>
-                                <el-menu-item index="2">
-                                    <el-icon>
-                                        <Reading />
-                                    </el-icon>
-                                    <span>test</span>
+                                    <span>添加小组</span>
                                 </el-menu-item>
                             </el-menu>
                         </el-col>
-                        <el-col :span="20" :offset="1">
-                            <div v-if="this.selectMenuIndex == 1">
+                        <el-col :span="18" :offset="1">
+                            <div v-if="this.selectMenuIndex == '-1-0'">
                                 <el-row>
                                     <el-col>
                                         <ul class="groupFavouriteList">
@@ -174,8 +212,67 @@
                                     </el-col>
                                 </el-row>
                             </div>
-                            <div v-else-if="this.selectMenuIndex == 2">
-                                test
+                            <div v-else-if="this.selectMenuIndex.slice(-2) == '-0'">
+                                <ul class="subgroupMemberList">
+                                    <li type="none" class="subgroupMember"
+                                        v-for="subgroupMember in this.subgroupList[this.selectMenuIndex.slice(0, 1)].subgroupMember">
+                                        <el-card @click="gotoUser(subgroupMember.id)" style="margin: 10px;">
+                                            <el-row>
+                                                <el-col :span="12">
+                                                    <el-avatar :size="50"
+                                                        :src="this.$http.defaults.baseURL + subgroupMember.avatar">
+                                                        {{ subgroupMember.username }}
+                                                    </el-avatar>
+                                                </el-col>
+                                                <el-col :span="12">
+                                                    <div v-if="subgroupMember.nickname">
+                                                        {{ subgroupMember.nickname }}
+                                                    </div>
+                                                    <div v-else>
+                                                        {{ subgroupMember.username }}
+                                                    </div>
+                                                </el-col>
+                                            </el-row>
+                                        </el-card>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div v-else-if="this.selectMenuIndex.slice(-3) == '-00'">
+                                <el-tabs>
+                                    <el-tab-pane label="User">User</el-tab-pane>
+                                    <el-tab-pane label="Config">Config</el-tab-pane>
+                                    <el-tab-pane label="Role">Role</el-tab-pane>
+                                    <el-tab-pane label="Task">Task</el-tab-pane>
+                                </el-tabs>
+                            </div>
+                            <div v-else-if="this.selectMenuIndex.slice(-4) == '-000'">
+
+                            </div>
+                            <div v-else-if="this.selectMenuIndex == '-2'">
+                                <el-row>
+                                    <el-col :span="3">
+                                        <span>小组名称：</span>
+                                    </el-col>
+                                    <el-col :span="13">
+                                        <el-input v-model="newSubgroup.name"></el-input>
+                                    </el-col>
+                                </el-row>
+                                <el-row style="margin-top: 20px; margin-bottom: 20px;">
+                                    <el-col>
+                                        <el-transfer ref="newSubgroupMember" v-model="newSubgroup.member" :props="{
+                                                key: 'id',
+                                                label: 'username',
+                                            }" :data="groupMember" :titles="['社团成员', '小组成员']" />
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col :span="3">
+                                        <el-button type="primary" @click="onCreateSubgroup">创建</el-button>
+                                    </el-col>
+                                    <el-col :span="2">
+                                        <el-button @click="onCancelCreateSubgroup">取消</el-button>
+                                    </el-col>
+                                </el-row>
                             </div>
                         </el-col>
                     </el-row>
@@ -242,7 +339,6 @@
 
 <script>
 import myHead from '../components/myHead.vue'
-import { Plus, Star, StarFilled, Reading } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 export default {
     components: { myHead },
@@ -264,9 +360,23 @@ export default {
             newNotice: null,
             groupMember: [],
             baseLocation: null,
-            selectMenuIndex: 1,
+            selectMenuIndex: '-1-0',
             groupFavouriteList: [],
-            totalGroupFavourite: null
+            totalGroupFavourite: null,
+            newSubgroup: {},
+            subgroupList: [{
+                // id: null,
+                // name: null,
+                // time: null,
+                // groupId: null,
+                // subgroupMember: [{
+                //     id: null,
+                //     username: null,
+                //     nickname: null,
+                //     avatar: null
+                // }],
+                // subgroupModule: []
+            }]
         }
     },
     async mounted() {
@@ -284,6 +394,9 @@ export default {
         const { data: groupFavouriteRes } = await this.$http.get('/group/groupFavouriteByIdPage?groupId=' + this.groupId + '&page=1')
         this.groupFavouriteList = groupFavouriteRes.data.bookList
         this.totalGroupFavourite = groupFavouriteRes.data.num
+        const { data: subgroupListRes } = await this.$http.get('/subgroup/getSubgroup?groupId=' + String(this.groupId))
+        this.subgroupList = subgroupListRes.data.subgroupList
+        console.log(this.subgroupList)
     },
     methods: {
         handleSuccess(responce, uploadFile, uploadFiles) {
@@ -443,7 +556,8 @@ export default {
         },
         async selectMenu(index) {
             this.selectMenuIndex = index
-            if (index == 1) {
+            console.log(this.selectMenuIndex)
+            if (index == '-1-0') {
                 const { data: groupFavouriteRes } = await this.$http.get('/group/groupFavouriteByIdPage?groupId=' + this.groupId + '&page=1')
                 this.groupFavouriteList = groupFavouriteRes.data.bookList
                 this.totalGroupFavourite = groupFavouriteRes.data.num
@@ -459,6 +573,32 @@ export default {
             const baseURL = url.split('/')[0]
             const newURL = baseURL + '/book?bookId=' + String(id)
             window.location.href = newURL
+        },
+        gotoUser(id) {
+            const url = String(window.location.href)
+            const baseURL = url.split('/')[0]
+            const newURL = baseURL + '/user?userId=' + String(id)
+            window.location.href = newURL
+        },
+        async onCreateSubgroup() {
+            const { data: res } = await this.$http.post('/subgroup/createSubgroup?name=' + this.newSubgroup.name, this.newSubgroup.member)
+            if (res.code === 1) {
+                ElMessage({
+                    message: res.message,
+                    type: 'success'
+                })
+                onCancelCreateSubgroup()
+
+            } else {
+                ElMessage({
+                    message: res.message,
+                    type: 'error'
+                })
+            }
+        },
+        onCancelCreateSubgroup() {
+            this.newSubgroup.name = null
+            this.newSubgroup.member = []
         }
     }
 }
@@ -532,6 +672,20 @@ export default {
 }
 
 .groupFavourite {
+    width: 25%;
+}
+
+.subgroupMemberList {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 0%;
+    padding: 0%;
+}
+
+.subgroupMember {
     width: 25%;
 }
 </style>
