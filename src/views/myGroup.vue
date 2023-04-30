@@ -53,6 +53,26 @@
                             </el-card>
                         </el-col>
                     </el-row>
+                    <el-row class="block" style="width: 90%;">
+                        <el-col>
+                            <el-card shadow="never">
+                                <template #header>
+                                    <div>
+                                        <span style="font-size: larger; font-weight: 600;">Popular Favourite Book</span>
+                                    </div>
+                                </template>
+                                <div v-for="book in topTenBook" :key="book">
+                                    <el-link :underline="false"
+                                        :href="this.baseLocation + '/book?bookId=' + String(book.id)">
+                                        <el-icon class="el-icon--left">
+                                            <View />
+                                        </el-icon>{{ book.name }}
+                                    </el-link>
+                                    <el-divider />
+                                </div>
+                            </el-card>
+                        </el-col>
+                    </el-row>
                 </div>
             </el-aside>
             <div class="container">
@@ -213,29 +233,54 @@
                                 </el-row>
                             </div>
                             <div v-else-if="this.selectMenuIndex.slice(-2) == '-0'">
-                                <ul class="subgroupMemberList">
-                                    <li type="none" class="subgroupMember"
-                                        v-for="subgroupMember in this.subgroupList[this.selectMenuIndex.slice(0, 1)].subgroupMember">
-                                        <el-card @click="gotoUser(subgroupMember.id)" style="margin: 10px;">
-                                            <el-row>
-                                                <el-col :span="12">
-                                                    <el-avatar :size="50"
-                                                        :src="this.$http.defaults.baseURL + subgroupMember.avatar">
-                                                        {{ subgroupMember.username }}
-                                                    </el-avatar>
-                                                </el-col>
-                                                <el-col :span="12">
-                                                    <div v-if="subgroupMember.nickname">
-                                                        {{ subgroupMember.nickname }}
-                                                    </div>
-                                                    <div v-else>
-                                                        {{ subgroupMember.username }}
-                                                    </div>
-                                                </el-col>
-                                            </el-row>
-                                        </el-card>
-                                    </li>
-                                </ul>
+                                <el-row style="margin-top: 20px;">
+                                    <el-col :span="3" :offset="1">
+                                        小组改名：
+                                    </el-col>
+                                    <el-col :span="9">
+                                        <el-input v-model="this.newSubgroupName"></el-input>
+                                    </el-col>
+                                    <el-col :span="2" :offset="1">
+                                        <el-button
+                                            @click="onUpdateSubgourpName(this.subgroupList[this.selectMenuIndex.slice(0, 1)].id)"
+                                            type="primary">确认</el-button>
+                                    </el-col>
+                                    <el-col :span="2">
+                                        <el-button @click="onCancelUpdateSubgourpName">取消</el-button>
+                                    </el-col>
+                                    <el-col :span="4" :offset="2">
+                                        <el-button type="danger"
+                                            @click="onDeleteSubgourpName(this.subgroupList[this.selectMenuIndex.slice(0, 1)].id)">解散小组</el-button>
+                                    </el-col>
+                                </el-row>
+                                <el-divider />
+                                <el-row>
+                                    <el-col>
+                                        <ul class="subgroupMemberList">
+                                            <li type="none" class="subgroupMember"
+                                                v-for="subgroupMember in this.subgroupList[this.selectMenuIndex.slice(0, 1)].subgroupMember">
+                                                <el-card @click="gotoUser(subgroupMember.id)" style="margin: 10px;">
+                                                    <el-row>
+                                                        <el-col :span="12">
+                                                            <el-avatar :size="50"
+                                                                :src="this.$http.defaults.baseURL + subgroupMember.avatar">
+                                                                {{ subgroupMember.username }}
+                                                            </el-avatar>
+                                                        </el-col>
+                                                        <el-col :span="12">
+                                                            <div v-if="subgroupMember.nickname">
+                                                                {{ subgroupMember.nickname }}
+                                                            </div>
+                                                            <div v-else>
+                                                                {{ subgroupMember.username }}
+                                                            </div>
+                                                        </el-col>
+                                                    </el-row>
+                                                </el-card>
+                                            </li>
+                                        </ul>
+                                    </el-col>
+                                </el-row>
                             </div>
                             <div v-else-if="this.selectMenuIndex.slice(-3) == '-00'">
                                 <el-tabs>
@@ -249,14 +294,15 @@
 
                             </div>
                             <div v-else-if="this.selectMenuIndex == '-2'">
-                                <el-row>
-                                    <el-col :span="3">
+                                <el-row style="margin-top: 20px;">
+                                    <el-col :span="3" :offset="1">
                                         <span>小组名称：</span>
                                     </el-col>
                                     <el-col :span="13">
                                         <el-input v-model="newSubgroup.name"></el-input>
                                     </el-col>
                                 </el-row>
+                                <el-divider />
                                 <el-row style="margin-top: 20px; margin-bottom: 20px;">
                                     <el-col>
                                         <el-transfer ref="newSubgroupMember" v-model="newSubgroup.member" :props="{
@@ -364,6 +410,8 @@ export default {
             groupFavouriteList: [],
             totalGroupFavourite: null,
             newSubgroup: {},
+            newSubgroupName: null,
+            topTenBook: [],
             subgroupList: [{
                 // id: null,
                 // name: null,
@@ -396,7 +444,8 @@ export default {
         this.totalGroupFavourite = groupFavouriteRes.data.num
         const { data: subgroupListRes } = await this.$http.get('/subgroup/getSubgroup?groupId=' + String(this.groupId))
         this.subgroupList = subgroupListRes.data.subgroupList
-        console.log(this.subgroupList)
+        const { data: topTenBookRes } = await this.$http.get('/group/topTenFavourite?groupId=' + String(this.groupId))
+        this.topTenBook = topTenBookRes.data.bookList
     },
     methods: {
         handleSuccess(responce, uploadFile, uploadFiles) {
@@ -581,14 +630,15 @@ export default {
             window.location.href = newURL
         },
         async onCreateSubgroup() {
-            const { data: res } = await this.$http.post('/subgroup/createSubgroup?name=' + this.newSubgroup.name, this.newSubgroup.member)
+            const { data: res } = await this.$http.post('/subgroup/createSubgroup?name=' + this.newSubgroup.name + '&groupId=' + this.groupId, this.newSubgroup.member)
             if (res.code === 1) {
                 ElMessage({
                     message: res.message,
                     type: 'success'
                 })
-                onCancelCreateSubgroup()
-
+                this.onCancelCreateSubgroup()
+                const { data: subgroupListRes } = await this.$http.get('/subgroup/getSubgroup?groupId=' + String(this.groupId))
+                this.subgroupList = subgroupListRes.data.subgroupList
             } else {
                 ElMessage({
                     message: res.message,
@@ -599,6 +649,47 @@ export default {
         onCancelCreateSubgroup() {
             this.newSubgroup.name = null
             this.newSubgroup.member = []
+        },
+        async onUpdateSubgourpName(id) {
+            const { data: res } = await this.$http.put('/subgroup/updateSubgroupName?id=' + id + '&name=' + this.newSubgroupName)
+            if (res.code === 1) {
+                ElMessage({
+                    message: res.message,
+                    type: 'success'
+                })
+                for (const index in this.subgroupList) {
+                    if (this.subgroupList[index].id == id) {
+                        this.subgroupList[index].name = this.newSubgroupName
+                        break
+                    }
+                }
+                this.onCancelUpdateSubgourpName()
+            } else {
+                ElMessage({
+                    message: res.message,
+                    type: 'error'
+                })
+            }
+        },
+        onCancelUpdateSubgourpName() {
+            this.newSubgroupName = null
+        },
+        async onDeleteSubgourpName(id) {
+            const { data: res } = await this.$http.delete('/subgroup/deleteSubgroup?id=' + id)
+            if (res.code === 1) {
+                ElMessage({
+                    message: res.message,
+                    type: 'success'
+                })
+                const { data: subgroupListRes } = await this.$http.get('/subgroup/getSubgroup?groupId=' + String(this.groupId))
+                this.subgroupList = subgroupListRes.data.subgroupList
+                this.selectMenuIndex = '-1-0'
+            } else {
+                ElMessage({
+                    message: res.message,
+                    type: 'error'
+                })
+            }
         }
     }
 }
