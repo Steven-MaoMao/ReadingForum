@@ -169,7 +169,7 @@
                                                         comment.username }}</el-avatar>
                                                 </el-col>
                                                 <el-col :span="17" style="display: flex; align-items: center;">
-                                                    <div v-if="comment.mickname !== null">{{ comment.nickname }}</div>
+                                                    <div v-if="comment.nickname !== null">{{ comment.nickname }}</div>
                                                     <div v-else>{{ comment.username }}</div>
                                                 </el-col>
                                                 <el-col :span="5" style="display: flex; align-items: center;">
@@ -177,7 +177,6 @@
                                                 </el-col>
                                             </el-row>
                                         </div>
-
                                     </template>
                                     <div>
                                         {{ comment.comment }}
