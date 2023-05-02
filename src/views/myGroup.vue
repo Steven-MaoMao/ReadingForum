@@ -174,6 +174,12 @@
                                                 </el-icon>
                                                 <span>{{ md.name }}</span>
                                             </el-menu-item>
+                                            <el-menu-item v-else-if="md.id == 2" :index="index + '-2'">
+                                                <el-icon>
+                                                    <Star />
+                                                </el-icon>
+                                                <span>{{ md.name }}</span>
+                                            </el-menu-item>
                                         </div>
                                         <el-menu-item :index="index + '-00'">
                                             <el-icon>
@@ -293,6 +299,10 @@
                             <div v-else-if="this.selectMenuIndex.slice(-2) == '-1'">
                                 <subgroupNotice :subgroupId="this.subgroupList[this.selectMenuIndex.split('-')[0]].id">
                                 </subgroupNotice>
+                            </div>
+                            <div v-else-if="this.selectMenuIndex.slice(-2) == '-2'">
+                                <bookRecommend :subgroupId="this.subgroupList[this.selectMenuIndex.split('-')[0]].id">
+                                </bookRecommend>
                             </div>
                             <div v-else-if="this.selectMenuIndex.slice(-3) == '-00'">
                                 <el-row style="margin-top: 20px;">
@@ -416,9 +426,10 @@
 <script>
 import myHead from '../components/myHead.vue'
 import subgroupNotice from '../components/subgroupNotice.vue'
+import bookRecommend from '../components/bookRecommend.vue'
 import { ElMessage } from 'element-plus'
 export default {
-    components: { myHead, subgroupNotice },
+    components: { myHead, subgroupNotice, bookRecommend },
     data() {
         return {
             userId: JSON.parse(sessionStorage.getItem('id')),
