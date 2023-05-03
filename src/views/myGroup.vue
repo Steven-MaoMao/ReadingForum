@@ -195,7 +195,7 @@
                                         </el-menu-item>
                                     </el-menu-iten-group>
                                 </el-sub-menu>
-                                <el-menu-item index="-2">
+                                <el-menu-item index="-01">
                                     <el-icon>
                                         <Plus />
                                     </el-icon>
@@ -211,7 +211,7 @@
                                             <li class="groupFavourite" type="none"
                                                 v-for="groupFavourite in groupFavouriteList">
                                                 <el-card @click="gotoBook(groupFavourite.id)"
-                                                    style="margin: 10px; height: 500px;"
+                                                    style="margin: 10px; height: 600px;"
                                                     :body-style="{ 'margin': '20px', 'padding': '0px', 'display': 'flex', 'flex-direction': 'column', 'align-items': 'center' }">
                                                     <el-image :src="this.$http.defaults.baseURL + groupFavourite.bookCover"
                                                         fit="cover" style="width: 100%; height: 250px;">
@@ -333,7 +333,7 @@
                                     </el-col>
                                 </el-row>
                             </div>
-                            <div v-else-if="this.selectMenuIndex == '-2'">
+                            <div v-else-if="this.selectMenuIndex == '-01'">
                                 <el-row style="margin-top: 20px;">
                                     <el-col :span="3" :offset="1">
                                         <span>小组名称：</span>

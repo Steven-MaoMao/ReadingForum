@@ -19,7 +19,7 @@
                                     <el-descriptions-item label="出版社：">{{ bookInfo.publisher }}</el-descriptions-item>
                                     <el-descriptions-item label="出版时间：">{{ bookInfo.publishTime }}</el-descriptions-item>
                                     <el-descriptions-item label="译者：">{{ bookInfo.translator }}</el-descriptions-item>
-                                    <el-descriptions-item label="ISBN：">{{ bookInfo.ISBN }}</el-descriptions-item>
+                                    <el-descriptions-item label="ISBN：">{{ bookInfo.isbn }}</el-descriptions-item>
                                     <el-descriptions-item label="标签：">
                                         <div style="display: flex; flex-direction: column; width: 60%;">
                                             <el-tag v-for="tag in bookInfo.tags" :round="true"
@@ -30,7 +30,7 @@
                                     </el-descriptions-item>
                                 </el-descriptions>
                             </el-col>
-                            <el-col :span="10" style="padding-top: 40px;">
+                            <el-col :span="9" :offset="1" style="padding-top: 40px;">
                                 书籍评分：
                                 <el-row style="margin-bottom: 20px;">
                                     <el-col :span="6" style="display: flex; align-items: center;">
@@ -158,7 +158,10 @@
                 </el-row>
                 <el-row class="block">
                     <el-col>
-                        <el-row v-for="comment in this.bookComment">
+                        <span style="font-size: x-large; font-weight: 500;">书籍评论：</span>
+                        <el-divider />
+                        <el-empty v-if="this.bookComment.length == 0" description="description" />
+                        <el-row v-else v-for="comment in this.bookComment">
                             <el-col>
                                 <el-card style="margin: 10px;">
                                     <template #header>

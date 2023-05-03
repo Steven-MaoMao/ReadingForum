@@ -28,7 +28,7 @@
                             <el-col>
                                 <ul class="bookList">
                                     <li class="book" type="none" v-for="book in bookList">
-                                        <el-card @click="gotoBook(book.id)" style="margin: 10px; height: 500px;"
+                                        <el-card @click="gotoBook(book.id)" style="margin: 10px; height: 600px;"
                                             :body-style="{ 'margin': '20px', 'padding': '0px', 'display': 'flex', 'flex-direction': 'column', 'align-items': 'center' }">
                                             <el-image :src="this.$http.defaults.baseURL + book.bookCover" fit="cover"
                                                 style="width: 100%; height: 250px;">

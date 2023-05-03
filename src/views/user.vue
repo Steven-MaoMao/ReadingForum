@@ -47,7 +47,7 @@
                                         <ul class="favouriteList">
                                             <li class="favourite" type="none" v-for="favourite in favouriteList">
                                                 <el-card @click="gotoBook(favourite.id)"
-                                                    style="margin: 10px; height: 500px;"
+                                                    style="margin: 10px; height: 600px;"
                                                     :body-style="{ 'margin': '20px', 'padding': '0px', 'display': 'flex', 'flex-direction': 'column', 'align-items': 'center' }">
                                                     <el-image :src="this.$http.defaults.baseURL + favourite.bookCover"
                                                         fit="cover" style="width: 100%; height: 250px;">

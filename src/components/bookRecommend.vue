@@ -42,7 +42,7 @@
                     <el-col :span="17" :offset="1">
                         <el-row>
                             <el-col>
-                                <el-descriptions title="书籍信息">
+                                <el-descriptions title="书籍信息" :column=1>
                                     <el-descriptions-item label="书名：">{{ bookRecommend.book.name }}</el-descriptions-item>
                                     <el-descriptions-item label="作者：">{{ bookRecommend.book.author }}</el-descriptions-item>
                                     <el-descriptions-item label="出版社：">{{ bookRecommend.book.publisher
@@ -51,10 +51,10 @@
                                     }}</el-descriptions-item>
                                     <el-descriptions-item label="译者：">{{ bookRecommend.book.translator
                                     }}</el-descriptions-item>
-                                    <el-descriptions-item label="ISBN：">{{ bookRecommend.book.ISBN }}</el-descriptions-item>
+                                    <el-descriptions-item label="ISBN：">{{ bookRecommend.book.isbn }}</el-descriptions-item>
                                     <el-descriptions-item label="标签：">
                                         <el-tag v-for="tag in bookRecommend.book.tags" :round="true"
-                                            style="margin-bottom: 5px; user-select: none;" @click="gotoTag(tag.id)">
+                                            style="margin-bottom: 10px; user-select: none;" @click="gotoTag(tag.id)">
                                             {{ tag.name }}
                                         </el-tag>
                                     </el-descriptions-item>
@@ -110,7 +110,7 @@
                                 }}</el-descriptions-item>
                                 <el-descriptions-item label="译者：">{{ newBook.translator
                                 }}</el-descriptions-item>
-                                <el-descriptions-item label="ISBN：">{{ newBook.ISBN }}</el-descriptions-item>
+                                <el-descriptions-item label="ISBN：">{{ newBook.isbn }}</el-descriptions-item>
                             </el-descriptions>
                         </el-col>
                     </el-row>

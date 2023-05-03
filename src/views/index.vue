@@ -51,31 +51,35 @@
                             <div style="font-size: x-large; font-weight: 600;">Top Three Books</div>
                             <el-link @click="gotoBookList">更多>></el-link>
                         </div>
-                        <el-carousel type="card" height="600px">
-                            <el-carousel-item v-for="book in this.topThreeBook" :key="book">
-                                <el-card @click="gotoBook(book.id)"
-                                    :body-style="{ 'width': '100%', 'height': '500px', 'margin': '20px', 'padding': '0px', 'display': 'flex', 'flex-direction': 'column', 'align-items': 'center' }">
-                                    <el-image :src="this.$http.defaults.baseURL + book.bookCover" fit="cover"
-                                        style="width: 200px; height: 300px;">
-                                    </el-image>
-                                    <el-descriptions size="small" :column=1 style="margin-left: 20px;">
-                                        <el-descriptions-item label="书名">{{ book.name
-                                        }}</el-descriptions-item>
-                                        <el-descriptions-item label="作者">{{ book.author
-                                        }}</el-descriptions-item>
-                                        <el-descriptions-item label="出版社">{{ book.publisher
-                                        }}</el-descriptions-item>
-                                        <el-descriptions-item label="标签">
-                                            <div style="display: flex; flex-direction: column;">
-                                                <el-tag v-for="tag in book.tags" :round="true" size="small">
-                                                    {{ tag.name }}
-                                                </el-tag>
-                                            </div>
-                                        </el-descriptions-item>
-                                    </el-descriptions>
-                                </el-card>
-                            </el-carousel-item>
-                        </el-carousel>
+                        <el-row justify="center">
+                            <el-col :span="18">
+                                <el-carousel type="card" height="600px">
+                                    <el-carousel-item v-for="book in this.topThreeBook" :key="book">
+                                        <el-card @click="gotoBook(book.id)"
+                                            :body-style="{ 'width': '100%', 'height': '550px', 'margin': '20px', 'padding': '0px', 'display': 'flex', 'flex-direction': 'column', 'align-items': 'center' }">
+                                            <el-image :src="this.$http.defaults.baseURL + book.bookCover" fit="cover"
+                                                style="width: 200px; height: 300px;">
+                                            </el-image>
+                                            <el-descriptions size="small" :column=1 style="width: 200px; margin-top: 10px;">
+                                                <el-descriptions-item label="书名">{{ book.name
+                                                }}</el-descriptions-item>
+                                                <el-descriptions-item label="作者">{{ book.author
+                                                }}</el-descriptions-item>
+                                                <el-descriptions-item label="出版社">{{ book.publisher
+                                                }}</el-descriptions-item>
+                                                <el-descriptions-item label="标签">
+                                                    <div style="display: flex; flex-direction: column;">
+                                                        <el-tag v-for="tag in book.tags" :round="true" size="small">
+                                                            {{ tag.name }}
+                                                        </el-tag>
+                                                    </div>
+                                                </el-descriptions-item>
+                                            </el-descriptions>
+                                        </el-card>
+                                    </el-carousel-item>
+                                </el-carousel>
+                            </el-col>
+                        </el-row>
                     </el-col>
                 </el-row>
                 <el-row class="block">
@@ -88,7 +92,7 @@
                             <el-col>
                                 <ul class="latestFiveBookList">
                                     <li class="latestFiveBook" type="none" v-for="book in latestFiveBook">
-                                        <el-card @click="gotoBook(book.id)" style="margin: 10px; height: 420px;"
+                                        <el-card @click="gotoBook(book.id)" style="margin: 10px; height: 500px;"
                                             :body-style="{ 'margin': '20px', 'padding': '0px', 'display': 'flex', 'flex-direction': 'column', 'align-items': 'center' }">
                                             <el-image :src="this.$http.defaults.baseURL + book.bookCover" fit="cover"
                                                 style="width: 100%; height: 200px;">
@@ -125,7 +129,7 @@
                             <el-col>
                                 <ul class="latestFiveBookList">
                                     <li class="latestFiveBook" type="none" v-for="book in recommendBook">
-                                        <el-card @click="gotoBook(book.id)" style="margin: 10px; height: 420px;"
+                                        <el-card @click="gotoBook(book.id)" style="margin: 10px; height: 500px;"
                                             :body-style="{ 'margin': '20px', 'padding': '0px', 'display': 'flex', 'flex-direction': 'column', 'align-items': 'center' }">
                                             <el-image :src="this.$http.defaults.baseURL + book.bookCover" fit="cover"
                                                 style="width: 100%; height: 200px;">
