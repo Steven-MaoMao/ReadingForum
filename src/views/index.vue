@@ -167,7 +167,7 @@
                         </el-row>
                     </el-col>
                 </el-row>
-                <el-row class="block" v-if="this.groupId < 1">
+                <el-row class="block">
                     <el-col>
                         <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
                             <div style="font-size: x-large; font-weight: 600;">Top Five Groups</div>
@@ -270,7 +270,6 @@ export default {
             recommendBook: [],
             topFiveGroup: [],
             avatar: JSON.parse(sessionStorage.getItem('avatar')),
-            groupId: JSON.parse(sessionStorage.getItem('groupId')),
             uploadBookDialogVisible: false,
             newBook: {
                 name: null,

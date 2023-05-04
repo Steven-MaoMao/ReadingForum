@@ -49,7 +49,7 @@
                 </el-row>
                 <el-row justify="center" v-if="this.userInfo.groupId != 0">
                     <el-col :span="24" style="display: flex; justify-content: center; margin-top: 10px;">
-                        <el-button @click="this.$router.push('/myGroup')">我的社团</el-button>
+                        <el-button @click="this.$router.push('/myGroupList')">我的社团</el-button>
                     </el-col>
                 </el-row>
                 <el-row justify="center">
@@ -95,8 +95,6 @@ export default {
         this.userInfo.email = JSON.parse(sessionStorage.getItem('email'))
         this.userInfo.location = JSON.parse(sessionStorage.getItem('location'))
         this.userInfo.bio = JSON.parse(sessionStorage.getItem('bio'))
-        this.userInfo.groupId = JSON.parse(sessionStorage.getItem('groupId'))
-        this.userInfo.groupManager = JSON.parse(sessionStorage.getItem('groupManager'))
         const { data: res } = await this.$http.get('/user/num')
         this.favouriteNum = res.data.favouriteNum
         this.followingNum = res.data.followingNum

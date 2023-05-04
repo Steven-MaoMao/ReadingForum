@@ -84,8 +84,6 @@ export default {
           sessionStorage.setItem('email', JSON.stringify(res.data.userInfo.email))
           sessionStorage.setItem('location', JSON.stringify(res.data.userInfo.location))
           sessionStorage.setItem('bio', JSON.stringify(res.data.userInfo.bio))
-          sessionStorage.setItem('groupId', JSON.stringify(res.data.userInfo.groupId))
-          sessionStorage.setItem('groupManager', JSON.stringify(res.data.userInfo.groupManager))
           this.$router.push('/')
         } else {
           ElMessage({

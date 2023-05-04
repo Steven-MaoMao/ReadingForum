@@ -336,8 +336,6 @@ export default {
         this.userInfo.email = JSON.parse(sessionStorage.getItem('email'))
         this.userInfo.location = JSON.parse(sessionStorage.getItem('location'))
         this.userInfo.bio = JSON.parse(sessionStorage.getItem('bio'))
-        this.userInfo.groupId = JSON.parse(sessionStorage.getItem('groupId'))
-        this.userInfo.groupManager = JSON.parse(sessionStorage.getItem('groupManager'))
         if (JSON.parse(sessionStorage.getItem('avatar')) !== null) {
             this.avatarUrl = this.$http.defaults.baseURL + JSON.parse(sessionStorage.getItem('avatar'))
         }
