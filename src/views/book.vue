@@ -30,7 +30,7 @@
                                     </el-descriptions-item>
                                 </el-descriptions>
                             </el-col>
-                            <el-col :span="9" :offset="1" style="padding-top: 40px;">
+                            <el-col :span="9" :offset="1">
                                 书籍评分：
                                 <el-row style="margin-bottom: 20px;">
                                     <el-col :span="6" style="display: flex; align-items: center;">
@@ -82,7 +82,30 @@
                                         <el-progress :percentage="this.bookRate.one" />
                                     </el-col>
                                 </el-row>
-                                <el-row style="margin-top: 50px;">
+                                <el-row style="margin-top: 20px;">
+                                    <el-col :span="6">推荐人：</el-col>
+                                    <el-col :span="14">
+                                        <el-card @click="gotoUser(bookInfo.uploadUser)">
+                                            <el-row>
+                                                <el-col :span="12">
+                                                    <el-avatar :size="50"
+                                                        :src="this.$http.defaults.baseURL + bookInfo.user.avatar">
+                                                        {{ bookInfo.user.username }}
+                                                    </el-avatar>
+                                                </el-col>
+                                                <el-col :span="12">
+                                                    <div v-if="bookInfo.user.nickname">
+                                                        {{ bookInfo.user.nickname }}
+                                                    </div>
+                                                    <div v-else>
+                                                        {{ bookInfo.user.username }}
+                                                    </div>
+                                                </el-col>
+                                            </el-row>
+                                        </el-card>
+                                    </el-col>
+                                </el-row>
+                                <el-row style="margin-top: 30px;">
                                     <el-col>
                                         <el-button v-if="this.isFavourite === false" @click="favourite">收藏</el-button>
                                         <el-button v-else @click="disFavourite" type="danger">取消收藏</el-button>
@@ -210,7 +233,9 @@ export default {
     data() {
         return {
             bookId: null,
-            bookInfo: {},
+            bookInfo: {
+                user: {},
+            },
             isFavourite: false,
             bookRate: {
                 myRate: 0,
@@ -357,6 +382,12 @@ export default {
             const url = String(window.location.href)
             const baseURL = url.split('/')[0]
             const newURL = baseURL + '/bookList?tag=' + String(tag)
+            window.location.href = newURL
+        },
+        gotoUser(id) {
+            const url = String(window.location.href)
+            const baseURL = url.split('/')[0]
+            const newURL = baseURL + '/user?userId=' + String(id)
             window.location.href = newURL
         }
     }
