@@ -35,16 +35,56 @@
                                     <el-col :span="6" v-if="this.isGroupMember">
                                         <el-button @click="setGroupManager(user.id)" v-if="user.groupManager === false"
                                             style="height: 100%;"
-                                            :disabled="this.groupInfo.createUser !== this.userId || user.id === this.groupInfo.createUser">
+                                            :disabled="!this.groupManager || user.id == this.groupInfo.createUser">
                                             <el-icon>
                                                 <Star />
                                             </el-icon>
                                         </el-button>
                                         <el-button type="primary" @click="dismissGroupManager(user.id)" v-else
                                             style="height: 100%;"
-                                            :disabled="this.groupInfo.createUser !== this.userId || user.id === this.groupInfo.createUser">
+                                            :disabled="!this.groupManager || user.id == this.groupInfo.createUser">
                                             <el-icon>
                                                 <StarFilled />
+                                            </el-icon>
+                                        </el-button>
+                                    </el-col>
+                                    <el-divider />
+                                </el-row>
+                            </el-card>
+                        </el-col>
+                    </el-row>
+                    <el-row class="block" style="width: 90%;" v-if="this.groupManager && this.groupApplicant.length > 0">
+                        <el-col>
+                            <el-card shadow="never">
+                                <template #header>
+                                    <div>
+                                        <span style="font-size: larger; font-weight: 600;">Group Applicants</span>
+                                    </div>
+                                </template>
+                                <el-row v-for="user in groupApplicant" :key="user">
+                                    <el-col :span="6">
+                                        <el-avatar :src="this.$http.defaults.baseURL + user.avatar">{{
+                                            user.username
+                                        }}</el-avatar>
+                                    </el-col>
+                                    <el-col :span="6">
+                                        <el-link :href="this.baseLocation + '/user?userId=' + String(user.id)"
+                                            v-if="user.nickname" style="height: 100%;">{{ user.nickname }}</el-link>
+                                        <el-link :href="this.baseLocation + '/user?userId=' + String(user.id)" v-else
+                                            style="height: 100%;">{{
+                                                user.username }}</el-link>
+                                    </el-col>
+                                    <el-col :span="6">
+                                        <el-button type="primary" @click="joinGroupPermit(user.id)" style="height: 100%;">
+                                            <el-icon size="20">
+                                                <Check />
+                                            </el-icon>
+                                        </el-button>
+                                    </el-col>
+                                    <el-col :span="6">
+                                        <el-button type="danger" @click="joinGroupReject(user.id)" style="height: 100%;">
+                                            <el-icon size="20">
+                                                <Close />
                                             </el-icon>
                                         </el-button>
                                     </el-col>
@@ -350,9 +390,9 @@
                                 <el-row style="margin-top: 20px; margin-bottom: 20px;">
                                     <el-col>
                                         <el-transfer ref="newSubgroupMember" v-model="newSubgroup.member" :props="{
-                                                key: 'id',
-                                                label: 'username',
-                                            }" :data="groupMember" :titles="['社团成员', '小组成员']" />
+                                            key: 'id',
+                                            label: 'username',
+                                        }" :data="groupMember" :titles="['社团成员', '小组成员']" />
                                     </el-col>
                                 </el-row>
                                 <el-row>
@@ -454,6 +494,7 @@ export default {
             newIntroduction: null,
             newNotice: null,
             groupMember: [],
+            groupApplicant: [],
             baseLocation: null,
             selectMenuIndex: '-1-0',
             groupFavouriteList: [],
@@ -495,6 +536,8 @@ export default {
         this.newNotice = this.groupInfo.notice
         const { data: groupMemberRes } = await this.$http.get('/user/groupMember?groupId=' + String(this.groupId))
         this.groupMember = groupMemberRes.data.userList
+        const { data: groupApplicantRes } = await this.$http.get('/user/groupApplicant?groupId=' + String(this.groupId))
+        this.groupApplicant = groupApplicantRes.data.userList
         this.baseLocation = String(window.location.href).split('/')[0]
         const { data: groupFavouriteRes } = await this.$http.get('/group/groupFavouriteByIdPage?groupId=' + this.groupId + '&page=1')
         this.groupFavouriteList = groupFavouriteRes.data.bookList
@@ -674,6 +717,33 @@ export default {
                     type: 'error'
                 })
             }
+        },
+        async joinGroupPermit(id) {
+            const { data: res } = await this.$http.put('/user/joinGroupPermit?userId=' + String(id) + '&groupId=' + String(this.groupId))
+            if (res.code === 1) {
+                ElMessage({
+                    message: res.message,
+                    type: 'success'
+                })
+                const { data: groupMemberRes } = await this.$http.get('/user/groupMember?groupId=' + String(this.groupId))
+                this.groupMember = groupMemberRes.data.userList
+                const { data: groupApplicantRes } = await this.$http.get('/user/groupApplicant?groupId=' + String(this.groupId))
+                this.groupApplicant = groupApplicantRes.data.userList
+            } else {
+                ElMessage({
+                    message: res.message,
+                    type: 'error'
+                })
+            }
+        },
+        async joinGroupReject(id) {
+            const { data: res } = await this.$http.put('/user/joinGroupReject?userId=' + String(id) + '&groupId=' + String(this.groupId))
+            ElMessage({
+                message: res.message,
+                type: 'error'
+            })
+            const { data: groupApplicantRes } = await this.$http.get('/user/groupApplicant?groupId=' + String(this.groupId))
+            this.groupApplicant = groupApplicantRes.data.userList
         },
         async selectMenu(index) {
             this.selectMenuIndex = index
