@@ -1,12 +1,23 @@
 <template>
-    <el-row>
-        <el-col>
+    <el-row justify="space-between">
+        <el-col :span="4">
             <el-button type="primary" size="large" style="margin: 10px;" @click="onCreateBookRecommendDialogVisible">
                 <el-icon>
                     <Plus />
                 </el-icon>
                 <span>
                     推荐书籍
+                </span>
+            </el-button>
+        </el-col>
+        <el-col :span="5">
+            <el-button type="primary" size="large" style="margin: 10px;"
+                @click="changeSubgroupModuleNameDialogVisible = true">
+                <el-icon>
+                    <EditPen />
+                </el-icon>
+                <span>
+                    组件改名
                 </span>
             </el-button>
         </el-col>
@@ -155,30 +166,58 @@
             </el-row>
         </div>
     </el-dialog>
+    <el-dialog v-model="changeSubgroupModuleNameDialogVisible" title="组件改名" width="30%"
+        :before-close="beforeChangeSubgroupModuleNameDialogClose">
+        <div class="dialog">
+            <el-row justify="center" style="width: 70%; margin-bottom: 20px;">
+                <el-col :span="6">
+                    组件名：
+                </el-col>
+                <el-col :span="18">
+                    <el-input v-model="this.newSubgroupModuleName"></el-input>
+                </el-col>
+            </el-row>
+            <el-row justify="center" style="width: 100%;">
+                <el-col :span="7" style="display: flex; justify-content: center;">
+                    <el-button type="primary" @click="onChangeSubgroupModuleName">确认</el-button>
+                </el-col>
+                <el-col :span="7" style="display: flex; justify-content: center;">
+                    <el-button @click="onCancelChangeSubgroupModuleName">取消</el-button>
+                </el-col>
+            </el-row>
+        </div>
+    </el-dialog>
 </template>
 
 <script>
 import { ElMessage } from 'element-plus'
 export default {
-    props: ['subgroupId'],
+    props: ['subgroupId', 'moduleName', 'subgroupModuleId'],
     data() {
         return {
             bookList: [],
             bookRecommendList: [],
             createBookRecommendDialogVisible: false,
             updateBookRecommendDialogVisible: false,
+            changeSubgroupModuleNameDialogVisible: false,
             newBookId: null,
             newBook: {},
             updateIndex: null,
             newBookRecommendReason: null,
+            newSubgroupModuleName: null
         }
     },
     async mounted() {
         this.userId = JSON.parse(sessionStorage.getItem('id'))
-        const { data: res } = await this.$http.get('/subgroup/getBookRecommend?subgroupId=' + this.subgroupId)
+        this.newSubgroupModuleName = this.moduleName
+        const { data: res } = await this.$http.get('/subgroup/getBookRecommend?name=' + this.moduleName)
         this.bookRecommendList = res.data.bookRecommendList
         const { data: bookListRes } = await this.$http.get('/book/allBook')
         this.bookList = bookListRes.data.bookList
+    },
+    async updated() {
+        const { data: res } = await this.$http.get('/subgroup/getBookRecommend?name=' + this.moduleName)
+        this.bookRecommendList = res.data.bookRecommendList
     },
     methods: {
         gotoBook(id) {
@@ -205,13 +244,13 @@ export default {
             this.updateBookRecommendDialogVisible = true
         },
         async onCreateBookRecommend() {
-            const { data: res } = await this.$http.post('/subgroup/addBookRecommend', { 'bookId': this.newBookId, 'recommendReason': this.newBookRecommendReason, 'userId': this.userId, 'subgroupId': this.subgroupId })
+            const { data: res } = await this.$http.post('/subgroup/addBookRecommend', { 'bookId': this.newBookId, 'recommendReason': this.newBookRecommendReason, 'userId': this.userId, 'subgroupModuleId': this.subgroupModuleId })
             if (res.code === 1) {
                 ElMessage({
                     message: res.message,
                     type: 'success'
                 })
-                const { data: res1 } = await this.$http.get('/subgroup/getBookRecommend?subgroupId=' + this.subgroupId)
+                const { data: res1 } = await this.$http.get('/subgroup/getBookRecommend?name=' + this.moduleName)
                 this.bookRecommendList = res1.data.bookRecommendList
                 this.beforeCreateBookRecommendDialogClose()
             } else {
@@ -228,7 +267,7 @@ export default {
                     message: res.message,
                     type: 'success'
                 })
-                const { data: res1 } = await this.$http.get('/subgroup/getBookRecommend?subgroupId=' + this.subgroupId)
+                const { data: res1 } = await this.$http.get('/subgroup/getBookRecommend?name=' + this.moduleName)
                 this.bookRecommendList = res1.data.bookRecommendList
                 this.beforeUpdateBookRecommendDialogClose()
             } else {
@@ -262,7 +301,7 @@ export default {
                     message: res.message,
                     type: 'success'
                 })
-                const { data: res1 } = await this.$http.get('/subgroup/getBookRecommend?subgroupId=' + this.subgroupId)
+                const { data: res1 } = await this.$http.get('/subgroup/getBookRecommend?name=' + this.moduleName)
                 this.bookRecommendList = res1.data.bookRecommendList
             } else {
                 ElMessage({
@@ -278,6 +317,29 @@ export default {
                     break
                 }
             }
+        },
+        beforeChangeSubgroupModuleNameDialogClose() {
+            this.onCancelChangeSubgroupModuleName()
+            this.changeSubgroupModuleNameDialogVisible = false
+        },
+        async onChangeSubgroupModuleName() {
+            const { data: res } = await this.$http.put('/subgroup/updateSubgroupModuleName?id=' + this.subgroupModuleId + '&name=' + this.newSubgroupModuleName)
+            if (res.code === 1) {
+                ElMessage({
+                    message: res.message,
+                    type: 'success'
+                })
+                this.beforeChangeSubgroupModuleNameDialogClose()
+                this.$router.go(0)
+            } else {
+                ElMessage({
+                    message: res.message,
+                    type: 'error'
+                })
+            }
+        },
+        onCancelChangeSubgroupModuleName() {
+            this.newSubgroupModuleName = this.moduleName
         }
     }
 }

@@ -49,7 +49,7 @@
                 </el-row>
                 <el-row justify="center" v-if="this.userInfo.groupId != 0">
                     <el-col :span="24" style="display: flex; justify-content: center; margin-top: 10px;">
-                        <el-button @click="this.$router.push('/myGroupList')">我的社团</el-button>
+                        <el-button @click="this.$router.push('/myGroup')">我的社团</el-button>
                     </el-col>
                 </el-row>
                 <el-row justify="center">

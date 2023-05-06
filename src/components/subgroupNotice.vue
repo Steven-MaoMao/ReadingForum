@@ -1,6 +1,6 @@
 <template>
-    <el-row>
-        <el-col>
+    <el-row justify="space-between">
+        <el-col :span="4">
             <el-button type="primary" size="large" style="margin: 10px;"
                 @click="onCreateSubgroupNoticeDialogVisible(index)">
                 <el-icon>
@@ -8,6 +8,17 @@
                 </el-icon>
                 <span>
                     新公告
+                </span>
+            </el-button>
+        </el-col>
+        <el-col :span="5">
+            <el-button type="primary" size="large" style="margin: 10px;"
+                @click="changeSubgroupModuleNameDialogVisible = true">
+                <el-icon>
+                    <EditPen />
+                </el-icon>
+                <span>
+                    组件改名
                 </span>
             </el-button>
         </el-col>
@@ -112,26 +123,55 @@
             </el-row>
         </div>
     </el-dialog>
+    <el-dialog v-model="changeSubgroupModuleNameDialogVisible" title="组件改名" width="30%"
+        :before-close="beforeChangeSubgroupModuleNameDialogClose">
+        <div class="dialog">
+            <el-row justify="center" style="width: 70%; margin-bottom: 20px;">
+                <el-col :span="6">
+                    组件名：
+                </el-col>
+                <el-col :span="18">
+                    <el-input v-model="this.newSubgroupModuleName"></el-input>
+                </el-col>
+            </el-row>
+            <el-row justify="center" style="width: 100%;">
+                <el-col :span="7" style="display: flex; justify-content: center;">
+                    <el-button type="primary" @click="onChangeSubgroupModuleName">确认</el-button>
+                </el-col>
+                <el-col :span="7" style="display: flex; justify-content: center;">
+                    <el-button @click="onCancelChangeSubgroupModuleName">取消</el-button>
+                </el-col>
+            </el-row>
+        </div>
+    </el-dialog>
 </template>
 
 <script>
 import { ElMessage } from 'element-plus'
 export default {
-    props: ['subgroupId'],
+    props: ['subgroupId', 'moduleName', 'subgroupModuleId'],
     data() {
         return {
             subgroupNoticeList: [],
             createSubgroupNoticeDialogVisible: false,
             changeSubgroupNoticeDialogVisible: false,
+            changeSubgroupModuleNameDialogVisible: false,
             updateIndex: null,
             newTitle: null,
             newText: null,
-            userId: null
+            userId: null,
+            newSubgroupModuleName: null
         }
     },
     async mounted() {
         this.userId = JSON.parse(sessionStorage.getItem('id'))
-        const { data: res } = await this.$http.get('/subgroup/getSubgroupNotice?subgroupId=' + this.subgroupId)
+        this.newSubgroupModuleName = this.moduleName
+        const { data: res } = await this.$http.get('/subgroup/getSubgroupNotice?name=' + this.moduleName)
+        this.subgroupNoticeList = res.data.subgroupNoticeList
+    },
+    async updated() {
+        //this.newSubgroupModuleName = this.moduleName
+        const { data: res } = await this.$http.get('/subgroup/getSubgroupNotice?name=' + this.moduleName)
         this.subgroupNoticeList = res.data.subgroupNoticeList
     },
     methods: {
@@ -148,7 +188,7 @@ export default {
                     message: res.message,
                     type: 'success'
                 })
-                const { data: res1 } = await this.$http.get('/subgroup/getSubgroupNotice?subgroupId=' + this.subgroupId)
+                const { data: res1 } = await this.$http.get('/subgroup/getSubgroupNotice?name=' + this.moduleName)
                 this.subgroupNoticeList = res1.data.subgroupNoticeList
             } else {
                 ElMessage({
@@ -179,14 +219,18 @@ export default {
             this.updateIndex = null
             this.changeSubgroupNoticeDialogVisible = false
         },
+        beforeChangeSubgroupModuleNameDialogClose() {
+            this.onCancelChangeSubgroupModuleName()
+            this.changeSubgroupModuleNameDialogVisible = false
+        },
         async onCreateSubgroupNotice() {
-            const { data: res } = await this.$http.post('/subgroup/createSubgroupNotice', { 'subgroupId': this.subgroupId, 'title': this.newTitle, 'text': this.newText, 'userId': this.userId })
+            const { data: res } = await this.$http.post('/subgroup/createSubgroupNotice', { 'subgroupModelId': this.subgroupModuleId, 'title': this.newTitle, 'text': this.newText, 'userId': this.userId })
             if (res.code === 1) {
                 ElMessage({
                     message: res.message,
                     type: 'success'
                 })
-                const { data: res1 } = await this.$http.get('/subgroup/getSubgroupNotice?subgroupId=' + this.subgroupId)
+                const { data: res1 } = await this.$http.get('/subgroup/getSubgroupNotice?name=' + this.moduleName)
                 this.subgroupNoticeList = res1.data.subgroupNoticeList
                 this.beforeCreateSubgroupNoticeDialogClose()
             } else {
@@ -203,9 +247,25 @@ export default {
                     message: res.message,
                     type: 'success'
                 })
-                const { data: res1 } = await this.$http.get('/subgroup/getSubgroupNotice?subgroupId=' + this.subgroupId)
+                const { data: res1 } = await this.$http.get('/subgroup/getSubgroupNotice?name=' + this.moduleName)
                 this.subgroupNoticeList = res1.data.subgroupNoticeList
                 this.beforeChangeSubgroupNoticeDialogClose()
+            } else {
+                ElMessage({
+                    message: res.message,
+                    type: 'error'
+                })
+            }
+        },
+        async onChangeSubgroupModuleName() {
+            const { data: res } = await this.$http.put('/subgroup/updateSubgroupModuleName?id=' + this.subgroupModuleId + '&name=' + this.newSubgroupModuleName)
+            if (res.code === 1) {
+                ElMessage({
+                    message: res.message,
+                    type: 'success'
+                })
+                this.beforeChangeSubgroupModuleNameDialogClose()
+                this.$router.go(0)
             } else {
                 ElMessage({
                     message: res.message,
@@ -220,6 +280,9 @@ export default {
         onCancelUpdateSubgroupNotice() {
             this.newTitle = this.subgroupNoticeList[this.updateIndex].title
             this.newText = this.subgroupNoticeList[this.updateIndex].text
+        },
+        onCancelChangeSubgroupModuleName() {
+            this.newSubgroupModuleName = this.moduleName
         }
     }
 }

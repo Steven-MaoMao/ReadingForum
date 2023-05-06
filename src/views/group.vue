@@ -212,13 +212,15 @@
                                             <span>小组成员</span>
                                         </el-menu-item>
                                         <div v-for="md in subgroup.moduleList">
-                                            <el-menu-item v-if="md.id == 1" :index="index + '-1'">
+                                            <el-menu-item v-if="md.id == 1"
+                                                :index="index + '-' + md.name + '-' + md.subgroupModuleId + '-1'">
                                                 <el-icon>
                                                     <Bell />
                                                 </el-icon>
                                                 <span>{{ md.name }}</span>
                                             </el-menu-item>
-                                            <el-menu-item v-else-if="md.id == 2" :index="index + '-2'">
+                                            <el-menu-item v-else-if="md.id == 2"
+                                                :index="index + '-' + md.name + '-' + md.subgroupModuleId + '-2'">
                                                 <el-icon>
                                                     <Star />
                                                 </el-icon>
@@ -341,11 +343,15 @@
                                 </el-row>
                             </div>
                             <div v-else-if="this.selectMenuIndex.slice(-2) == '-1'">
-                                <subgroupNotice :subgroupId="this.subgroupList[this.selectMenuIndex.split('-')[0]].id">
+                                <subgroupNotice :subgroupId="this.subgroupList[this.selectMenuIndex.split('-')[0]].id"
+                                    :moduleName="this.selectMenuIndex.split('-')[1]"
+                                    :subgroupModuleId="this.selectMenuIndex.split('-')[2]">
                                 </subgroupNotice>
                             </div>
                             <div v-else-if="this.selectMenuIndex.slice(-2) == '-2'">
-                                <bookRecommend :subgroupId="this.subgroupList[this.selectMenuIndex.split('-')[0]].id">
+                                <bookRecommend :subgroupId="this.subgroupList[this.selectMenuIndex.split('-')[0]].id"
+                                    :moduleName="this.selectMenuIndex.split('-')[1]"
+                                    :subgroupModuleId="this.selectMenuIndex.split('-')[2]">
                                 </bookRecommend>
                             </div>
                             <div v-else-if="this.selectMenuIndex.slice(-3) == '-00'">
@@ -353,10 +359,13 @@
                                     <el-col :span="8">
                                         <el-select v-model="this.newModuleId" size="large">
                                             <el-option v-for="md in this.moduleList" :key="md.id" :label="md.name"
-                                                :value="md.id" :disabled="isModuleExisted(md.id)" />
+                                                :value="md.id" />
                                         </el-select>
                                     </el-col>
-                                    <el-col :span="4">
+                                    <el-col :span="6">
+                                        <el-input v-model="this.newModuleName" size="large"></el-input>
+                                    </el-col>
+                                    <el-col :span="4" :offset="1">
                                         <el-button type="primary" size="large"
                                             @click="onAddSubgroupModule(this.subgroupList[this.selectMenuIndex.split('-')[0]].id)">确定</el-button>
                                     </el-col>
@@ -365,15 +374,15 @@
                             <div v-else-if="this.selectMenuIndex.slice(-4) == '-000'">
                                 <el-row style="margin-top: 20px;">
                                     <el-col :span="8">
-                                        <el-select v-model="this.deleteModuleId" size="large">
+                                        <el-select v-model="this.deleteModuleName" size="large">
                                             <el-option
                                                 v-for="md in this.subgroupList[this.selectMenuIndex.split('-')[0]].moduleList"
-                                                :key="md.id" :label="md.name" :value="md.id" />
+                                                :key="md.name" :label="md.name" :value="md.name" />
                                         </el-select>
                                     </el-col>
                                     <el-col :span="4">
                                         <el-button type="danger" size="large"
-                                            @click="onDeleteSubgroupModule(this.subgroupList[this.selectMenuIndex.split('-')[0]].id)">确定</el-button>
+                                            @click="onDeleteSubgroupModule(this.subgroupList[this.selectMenuIndex.split('-')[0]].name)">确定</el-button>
                                     </el-col>
                                 </el-row>
                             </div>
@@ -497,13 +506,15 @@ export default {
             groupApplicant: [],
             baseLocation: null,
             selectMenuIndex: '-1-0',
+            selectMenuName: null,
             groupFavouriteList: [],
             totalGroupFavourite: null,
             newSubgroup: {},
             newSubgroupName: null,
             topTenBook: [],
-            deleteModuleId: null,
+            deleteModuleName: null,
             newModuleId: null,
+            newModuleName: null,
             moduleList: [],
             subgroupList: [{
                 // id: null,
@@ -834,13 +845,13 @@ export default {
             }
         },
         async onDeleteSubgroupModule(subgroupId) {
-            const { data: res } = await this.$http.delete('/subgroup/deleteSubgroupModule?subgroupId=' + subgroupId + '&moduleId=' + this.deleteModuleId)
+            const { data: res } = await this.$http.delete('/subgroup/deleteSubgroupModule?moduleName=' + this.deleteModuleName)
             if (res.code === 1) {
                 ElMessage({
                     message: res.message,
                     type: 'success'
                 })
-                this.deleteModuleId = null
+                this.deleteModuleName = null
                 const { data: subgroupListRes } = await this.$http.get('/subgroup/getSubgroup?groupId=' + String(this.groupId))
                 this.subgroupList = subgroupListRes.data.subgroupList
             } else {
@@ -851,7 +862,7 @@ export default {
             }
         },
         async onAddSubgroupModule(subgroupId) {
-            const { data: res } = await this.$http.post('/subgroup/addSubgroupModule?subgroupId=' + subgroupId + '&moduleId=' + this.newModuleId)
+            const { data: res } = await this.$http.post('/subgroup/addSubgroupModule?subgroupId=' + subgroupId + '&moduleId=' + this.newModuleId + '&name=' + this.newModuleName)
             if (res.code === 1) {
                 ElMessage({
                     message: res.message,
