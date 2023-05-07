@@ -226,6 +226,13 @@
                                                 </el-icon>
                                                 <span>{{ md.name }}</span>
                                             </el-menu-item>
+                                            <el-menu-item v-else-if="md.id == 3"
+                                                :index="index + '-' + md.name + '-' + md.subgroupModuleId + '-3'">
+                                                <el-icon>
+                                                    <Connection />
+                                                </el-icon>
+                                                <span>{{ md.name }}</span>
+                                            </el-menu-item>
                                         </div>
                                         <el-menu-item :index="index + '-00'">
                                             <el-icon>
@@ -354,6 +361,12 @@
                                     :subgroupModuleId="this.selectMenuIndex.split('-')[2]">
                                 </bookRecommend>
                             </div>
+                            <div v-else-if="this.selectMenuIndex.slice(-2) == '-3'">
+                                <subgroupVote :subgroupId="this.subgroupList[this.selectMenuIndex.split('-')[0]].id"
+                                    :moduleName="this.selectMenuIndex.split('-')[1]"
+                                    :subgroupModuleId="this.selectMenuIndex.split('-')[2]">
+                                </subgroupVote>
+                            </div>
                             <div v-else-if="this.selectMenuIndex.slice(-3) == '-00'">
                                 <el-row style="margin-top: 20px;">
                                     <el-col :span="8">
@@ -481,9 +494,10 @@
 import myHead from '../components/myHead.vue'
 import subgroupNotice from '../components/subgroupNotice.vue'
 import bookRecommend from '../components/bookRecommend.vue'
+import subgroupVote from '../components/subgroupVote.vue'
 import { ElMessage } from 'element-plus'
 export default {
-    components: { myHead, subgroupNotice, bookRecommend },
+    components: { myHead, subgroupNotice, bookRecommend, subgroupVote },
     data() {
         return {
             userId: JSON.parse(sessionStorage.getItem('id')),
