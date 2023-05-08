@@ -111,13 +111,13 @@
                                         <el-button v-else @click="disFavourite" type="danger">取消收藏</el-button>
                                     </el-col>
                                 </el-row>
-                                <el-row v-if="this.groupManager" style="margin-top: 10px;">
+                                <!-- <el-row v-if="this.groupManager" style="margin-top: 10px;">
                                     <el-col>
                                         <el-button v-if="this.isGroupFavourite === false"
                                             @click="groupFavourite">加入社团收藏</el-button>
                                         <el-button v-else @click="disGroupFavourite" type="danger">移出社团收藏</el-button>
                                     </el-col>
-                                </el-row>
+                                </el-row> -->
                             </el-col>
                         </el-row>
                     </el-col>
@@ -257,7 +257,7 @@ export default {
         }
     },
     async mounted() {
-        this.groupId = JSON.parse(sessionStorage.getItem('groupId'))
+        // this.groupId = JSON.parse(sessionStorage.getItem('groupId'))
         this.groupManager = JSON.parse(sessionStorage.getItem('groupManager'))
         this.bookId = this.$route.query.bookId
         const { data: res } = await this.$http.get('/book/bookInfoById?id=' + this.bookId)

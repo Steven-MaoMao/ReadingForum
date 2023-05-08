@@ -187,14 +187,14 @@
                                         </el-icon>
                                         <span>全体成员</span>
                                     </template>
-                                    <el-menu-iten-group>
+                                    <el-menu-item-group>
                                         <el-menu-item index="-1-0">
                                             <el-icon>
                                                 <Reading />
                                             </el-icon>
                                             <span>收藏书籍</span>
                                         </el-menu-item>
-                                    </el-menu-iten-group>
+                                    </el-menu-item-group>
                                 </el-sub-menu>
                                 <el-sub-menu v-if="this.isGroupMember" v-for="(subgroup, index) in subgroupList"
                                     :index="index">
@@ -204,14 +204,71 @@
                                         </el-icon>
                                         <span>{{ subgroup.name }}</span>
                                     </template>
-                                    <el-menu-iten-group>
+                                    <el-menu-item-group>
                                         <el-menu-item :index="index + '-0'">
                                             <el-icon>
                                                 <User />
                                             </el-icon>
                                             <span>小组成员</span>
                                         </el-menu-item>
-                                        <div v-for="md in subgroup.moduleList">
+                                        <el-sub-menu :index="index + '=1'">
+                                            <template #title>
+                                                <el-icon>
+                                                    <Bell />
+                                                </el-icon>
+                                                <span>公告栏板块</span>
+                                            </template>
+                                            <el-menu-item-group>
+                                                <div v-for="md in subgroup.moduleList">
+                                                    <el-menu-item v-if="md.id == 1"
+                                                        :index="index + '-' + md.name + '-' + md.subgroupModuleId + '-1'">
+                                                        <el-icon>
+                                                            <Bell />
+                                                        </el-icon>
+                                                        <span>{{ md.name }}</span>
+                                                    </el-menu-item>
+                                                </div>
+                                            </el-menu-item-group>
+                                        </el-sub-menu>
+                                        <el-sub-menu :index="index + '=2'">
+                                            <template #title>
+                                                <el-icon>
+                                                    <Star />
+                                                </el-icon>
+                                                <span>书籍推荐板块</span>
+                                            </template>
+                                            <el-menu-item-group>
+                                                <div v-for="md in subgroup.moduleList">
+                                                    <el-menu-item v-if="md.id == 2"
+                                                        :index="index + '-' + md.name + '-' + md.subgroupModuleId + '-2'">
+                                                        <el-icon>
+                                                            <Star />
+                                                        </el-icon>
+                                                        <span>{{ md.name }}</span>
+                                                    </el-menu-item>
+                                                </div>
+                                            </el-menu-item-group>
+                                        </el-sub-menu>
+                                        <el-sub-menu :index="index + '=3'">
+                                            <template #title>
+                                                <el-icon>
+                                                    <Connection />
+                                                </el-icon>
+                                                <span>小组投票板块</span>
+                                            </template>
+                                            <el-menu-item-group>
+                                                <div v-for="md in subgroup.moduleList">
+                                                    <el-menu-item v-if="md.id == 3"
+                                                        :index="index + '-' + md.name + '-' + md.subgroupModuleId + '-3'">
+                                                        <el-icon>
+                                                            <Connection />
+                                                        </el-icon>
+                                                        <span>{{ md.name }}</span>
+                                                    </el-menu-item>
+                                                </div>
+                                            </el-menu-item-group>
+                                        </el-sub-menu>
+                                        <!-- <div v-for="md in subgroup.moduleList">
                                             <el-menu-item v-if="md.id == 1"
                                                 :index="index + '-' + md.name + '-' + md.subgroupModuleId + '-1'">
                                                 <el-icon>
@@ -233,7 +290,7 @@
                                                 </el-icon>
                                                 <span>{{ md.name }}</span>
                                             </el-menu-item>
-                                        </div>
+                                        </div> -->
                                         <el-menu-item :index="index + '-00'">
                                             <el-icon>
                                                 <Plus />
@@ -246,7 +303,7 @@
                                             </el-icon>
                                             <span>删除组件</span>
                                         </el-menu-item>
-                                    </el-menu-iten-group>
+                                    </el-menu-item-group>
                                 </el-sub-menu>
                                 <el-menu-item v-if="this.isGroupMember" index="-01">
                                     <el-icon>
@@ -258,6 +315,20 @@
                         </el-col>
                         <el-col :span="18" :offset="1">
                             <div v-if="this.selectMenuIndex == '-1-0'">
+                                <el-row>
+                                    <el-col>
+                                        <el-button type="primary" size="large" style="margin: 10px;"
+                                            @click="this.onGroupFavouriteDialogVisible">
+                                            <el-icon>
+                                                <Plus />
+                                            </el-icon>
+                                            <span>
+                                                收藏书籍
+                                            </span>
+                                        </el-button>
+                                    </el-col>
+                                </el-row>
+                                <el-divider />
                                 <el-row>
                                     <el-col>
                                         <ul class="groupFavouriteList">
@@ -488,6 +559,51 @@
             </el-row>
         </div>
     </el-dialog>
+    <el-dialog v-model="groupFavouriteDialogVisible" title="新增书籍推荐" width="40%"
+        :before-close="beforeGroupFavouriteDialogClose">
+        <div class="dialog">
+            <el-row justify="center" style="width: 80%;">
+                <el-col :span="10">
+                    <el-image :src="this.$http.defaults.baseURL + newBook.bookCover" fit="cover"
+                        style="width: 100%; height: 250px;">
+                    </el-image>
+                </el-col>
+                <el-col :span="12" :offset="2">
+                    <el-row style="margin-top: 10px;">
+                        <el-col>
+                            <el-select v-model="newBookId" filterable @change="onBookChange">
+                                <el-option v-for="book in bookList" :key="book.id" :label="book.name" :value="book.id"
+                                    :disabled="isDisabled(book.id)" />
+                            </el-select>
+                        </el-col>
+                    </el-row>
+                    <el-row style="margin-top: 10px;">
+                        <el-col>
+                            <el-descriptions :column=1 size="small">
+                                <el-descriptions-item label="书名：">{{ newBook.name }}</el-descriptions-item>
+                                <el-descriptions-item label="作者：">{{ newBook.author }}</el-descriptions-item>
+                                <el-descriptions-item label="出版社：">{{ newBook.publisher
+                                }}</el-descriptions-item>
+                                <el-descriptions-item label="出版时间：">{{ newBook.publishTime
+                                }}</el-descriptions-item>
+                                <el-descriptions-item label="译者：">{{ newBook.translator
+                                }}</el-descriptions-item>
+                                <el-descriptions-item label="ISBN：">{{ newBook.isbn }}</el-descriptions-item>
+                            </el-descriptions>
+                        </el-col>
+                    </el-row>
+                </el-col>
+            </el-row>
+            <el-row justify="center" style="width: 100%; margin-top: 20px;">
+                <el-col :span="7" style="display: flex; justify-content: center;">
+                    <el-button type="primary" @click="onGroupFavourite">确认</el-button>
+                </el-col>
+                <el-col :span="7" style="display: flex; justify-content: center;">
+                    <el-button @click="onCancelGroupFavourite">取消</el-button>
+                </el-col>
+            </el-row>
+        </div>
+    </el-dialog>
 </template>
 
 <script>
@@ -542,7 +658,11 @@ export default {
                 //     avatar: null
                 // }],
                 // subgroupModule: []
-            }]
+            }],
+            groupFavouriteDialogVisible: false,
+            newBookId: null,
+            newBook: {},
+            bookList: []
         }
     },
     async mounted() {
@@ -573,6 +693,8 @@ export default {
         this.topTenBook = topTenBookRes.data.bookList
         const { data: moduleRes } = await this.$http.get('/subgroup/getAllModule')
         this.moduleList = moduleRes.data.moduleList
+        const { data: bookListRes } = await this.$http.get('/book/allBook')
+        this.bookList = bookListRes.data.bookList
     },
     methods: {
         async joinGroup() {
@@ -896,6 +1018,53 @@ export default {
             const mdl = this.subgroupList[this.selectMenuIndex.split('-')[0]].moduleList
             for (const index in mdl) {
                 if (mdl[index].id == id) {
+                    return true
+                }
+            }
+            return false
+        },
+        onGroupFavouriteDialogVisible() {
+            this.newBookId = null
+            this.newBook = {}
+            this.groupFavouriteDialogVisible = true
+        },
+        beforeGroupFavouriteDialogClose() {
+            this.onCancelGroupFavourite()
+            this.groupFavouriteDialogVisible = false
+        },
+        onBookChange(value) {
+            for (const index in this.bookList) {
+                if (this.bookList[index].id == value) {
+                    this.newBook = this.bookList[index]
+                    break
+                }
+            }
+        },
+        async onGroupFavourite() {
+            const { data: res } = await this.$http.post('/group/groupFavourite?groupId=' + String(this.groupId) + '&bookId=' + String(this.newBookId))
+            if (res.code === 1) {
+                ElMessage({
+                    message: res.message,
+                    type: 'success'
+                })
+                const { data: groupFavouriteRes } = await this.$http.get('/group/groupFavouriteByIdPage?groupId=' + this.groupId + '&page=1')
+                this.groupFavouriteList = groupFavouriteRes.data.bookList
+                this.totalGroupFavourite = groupFavouriteRes.data.num
+                this.groupFavouriteDialogVisible = false
+            } else {
+                ElMessage({
+                    message: res.message,
+                    type: 'error'
+                })
+            }
+        },
+        onCancelGroupFavourite() {
+            this.newBookId = null
+            this.newBook = {}
+        },
+        isDisabled(bookId) {
+            for (const index in this.groupFavouriteList) {
+                if (this.groupFavouriteList[index].id == bookId) {
                     return true
                 }
             }

@@ -105,7 +105,7 @@ export default {
             newGroup: {
                 name: null
             },
-            groupId: JSON.parse(sessionStorage.getItem('groupId'))
+            // groupId: JSON.parse(sessionStorage.getItem('groupId'))
         }
     },
     async mounted() {
@@ -132,8 +132,8 @@ export default {
                     message: res.message,
                     type: 'success'
                 })
-                sessionStorage.setItem('groupId', JSON.stringify(res.data.groupId))
-                sessionStorage.setItem('groupManager', JSON.stringify(0))
+                // sessionStorage.setItem('groupId', JSON.stringify(res.data.groupId))
+                // sessionStorage.setItem('groupManager', JSON.stringify(0))
                 this.$router.push('/myGroup')
             } else {
                 ElMessage({
