@@ -1,5 +1,5 @@
 <template>
-    <el-row justify="space-between">
+    <!-- <el-row justify="space-between">
         <el-col :span="4">
             <el-button type="primary" size="large" style="margin: 10px;" @click="createSubgroupVoteDialogVisible = true">
                 <el-icon>
@@ -22,7 +22,7 @@
             </el-button>
         </el-col>
     </el-row>
-    <el-divider />
+    <el-divider /> -->
     <el-row v-for="(subgroupVote, index) in subgroupVoteList">
         <el-col>
             <el-card style="margin: 10px;">
@@ -47,12 +47,12 @@
                             <el-button @click="onChangeSubgroupVoteDialogVisible(index)">修改投票</el-button>
                         </el-col>
                         <el-col :span="3" style="display: flex; align-items: center;">
-                            <el-button @click="deleteSubgroupVote(subgroupVote.id)" type="danger">删除投票</el-button>
+                            <el-button @click="deleteSubgroupVote(this.subgroupFrameId)" type="danger">删除投票</el-button>
                         </el-col>
                     </el-row>
                 </template>
-                <el-row>
-                    <el-col>
+                <el-row justify="center">
+                    <el-col :span="21">
                         {{ subgroupVote.description }}
                     </el-col>
                 </el-row>
@@ -237,11 +237,11 @@
 <script>
 import { ElMessage } from 'element-plus'
 export default {
-    props: ['subgroupId', 'moduleName', 'subgroupModuleId'],
+    props: ['subgroupId', 'moduleName', 'subgroupModuleId', 'subgroupFrameId'],
     data() {
         return {
             userId: null,
-            createSubgroupNoticeDialogVisible: false,
+            changeSubgroupVoteDialogVisible: false,
             changeSubgroupModuleNameDialogVisible: false,
             newSubgroupModuleName: null,
             subgroupVoteList: [],
@@ -263,7 +263,7 @@ export default {
         this.groupId = this.$route.query.groupId
         this.userId = JSON.parse(sessionStorage.getItem('id'))
         this.newSubgroupModuleName = this.moduleName
-        const { data: subgroupVoteListRes } = await this.$http.get('/subgroup/getSubgroupVote?subgroupModuleId=' + String(this.subgroupModuleId))
+        const { data: subgroupVoteListRes } = await this.$http.get('/subgroup/getSubgroupVote?subgroupModuleId=' + String(this.subgroupFrameId))
         this.subgroupVoteList = subgroupVoteListRes.data.subgroupVoteList
         const { data: subgroupListRes } = await this.$http.get('/subgroup/getSubgroup?groupId=' + String(this.groupId))
         for (const index in subgroupListRes.data.subgroupList) {
@@ -321,7 +321,7 @@ export default {
                     message: res.message,
                     type: 'success'
                 })
-                const { data: subgroupVoteListRes } = await this.$http.get('/subgroup/getSubgroupVote?subgroupModuleId=' + String(this.subgroupModuleId))
+                const { data: subgroupVoteListRes } = await this.$http.get('/subgroup/getSubgroupVote?subgroupModuleId=' + String(this.subgroupFrameId))
                 this.subgroupVoteList = subgroupVoteListRes.data.subgroupVoteList
             } else {
                 ElMessage({
@@ -337,7 +337,7 @@ export default {
                     message: res.message,
                     type: 'success'
                 })
-                const { data: subgroupVoteListRes } = await this.$http.get('/subgroup/getSubgroupVote?subgroupModuleId=' + String(this.subgroupModuleId))
+                const { data: subgroupVoteListRes } = await this.$http.get('/subgroup/getSubgroupVote?subgroupModuleId=' + String(this.subgroupFrameId))
                 this.subgroupVoteList = subgroupVoteListRes.data.subgroupVoteList
             } else {
                 ElMessage({
@@ -353,7 +353,7 @@ export default {
                     message: res.message,
                     type: 'success'
                 })
-                const { data: subgroupVoteListRes } = await this.$http.get('/subgroup/getSubgroupVote?subgroupModuleId=' + String(this.subgroupModuleId))
+                const { data: subgroupVoteListRes } = await this.$http.get('/subgroup/getSubgroupVote?subgroupModuleId=' + String(this.subgroupFrameId))
                 this.subgroupVoteList = subgroupVoteListRes.data.subgroupVoteList
             } else {
                 ElMessage({
@@ -383,7 +383,7 @@ export default {
                     message: res.message,
                     type: 'success'
                 })
-                const { data: subgroupVoteListRes } = await this.$http.get('/subgroup/getSubgroupVote?subgroupModuleId=' + String(this.subgroupModuleId))
+                const { data: subgroupVoteListRes } = await this.$http.get('/subgroup/getSubgroupVote?subgroupModuleId=' + String(this.subgroupFrameId))
                 this.subgroupVoteList = subgroupVoteListRes.data.subgroupVoteList
                 this.beforeChangeSubgroupVoteDialogClose()
             } else {
@@ -408,7 +408,7 @@ export default {
                     message: res.message,
                     type: 'success'
                 })
-                const { data: subgroupVoteListRes } = await this.$http.get('/subgroup/getSubgroupVote?subgroupModuleId=' + String(this.subgroupModuleId))
+                const { data: subgroupVoteListRes } = await this.$http.get('/subgroup/getSubgroupVote?subgroupModuleId=' + String(this.subgroupFrameId))
                 this.subgroupVoteList = subgroupVoteListRes.data.subgroupVoteList
                 this.beforeCreateSubgroupVoteDialogClose()
             } else {

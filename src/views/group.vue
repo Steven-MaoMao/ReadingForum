@@ -180,23 +180,52 @@
                     <el-row class="block">
                         <el-col :span="5" style="padding-top: 10px; padding-left: 10px;">
                             <el-menu default-active="-1-0" @select="selectMenu">
-                                <el-sub-menu index="-1">
+                                <!-- <el-sub-menu index="-1">
                                     <template #title>
                                         <el-icon>
                                             <ChatLineSquare />
                                         </el-icon>
                                         <span>全体成员</span>
                                     </template>
-                                    <el-menu-item-group>
-                                        <el-menu-item index="-1-0">
-                                            <el-icon>
-                                                <Reading />
-                                            </el-icon>
-                                            <span>收藏书籍</span>
-                                        </el-menu-item>
-                                    </el-menu-item-group>
-                                </el-sub-menu>
-                                <el-sub-menu v-if="this.isGroupMember" v-for="(subgroup, index) in subgroupList"
+                                    <el-menu-item-group> -->
+                                <el-menu-item index="-1-0">
+                                    <el-icon>
+                                        <Reading />
+                                    </el-icon>
+                                    <span>收藏书籍</span>
+                                </el-menu-item>
+                                <!-- </el-menu-item-group>
+                                </el-sub-menu> -->
+                                <el-menu-item v-for="(subgroup, index) in subgroupList"
+                                    :index="index + '-' + subgroup.frameId">
+                                    <div v-if="subgroup.frameId == 1">
+                                        <el-icon>
+                                            <Bell />
+                                        </el-icon>
+                                    </div>
+                                    <div v-else-if="subgroup.frameId == 2">
+                                        <el-icon>
+                                            <Star />
+                                        </el-icon>
+                                    </div>
+                                    <div v-else-if="subgroup.frameId == 3">
+                                        <el-icon>
+                                            <Switch />
+                                        </el-icon>
+                                    </div>
+                                    <div v-else-if="subgroup.frameId == 4">
+                                        <el-icon>
+                                            <ChatDotSquare />
+                                        </el-icon>
+                                    </div>
+                                    <div v-else-if="subgroup.frameId == 5">
+                                        <el-icon>
+                                            <Location />
+                                        </el-icon>
+                                    </div>
+                                    <span>{{ subgroup.name }}</span>
+                                </el-menu-item>
+                                <!-- <el-sub-menu v-if="this.isGroupMember" v-for="(subgroup, index) in subgroupList"
                                     :index="index">
                                     <template #title>
                                         <el-icon>
@@ -211,64 +240,7 @@
                                             </el-icon>
                                             <span>小组成员</span>
                                         </el-menu-item>
-                                        <el-sub-menu :index="index + '=1'">
-                                            <template #title>
-                                                <el-icon>
-                                                    <Bell />
-                                                </el-icon>
-                                                <span>公告栏板块</span>
-                                            </template>
-                                            <el-menu-item-group>
-                                                <div v-for="md in subgroup.moduleList">
-                                                    <el-menu-item v-if="md.id == 1"
-                                                        :index="index + '-' + md.name + '-' + md.subgroupModuleId + '-1'">
-                                                        <el-icon>
-                                                            <Bell />
-                                                        </el-icon>
-                                                        <span>{{ md.name }}</span>
-                                                    </el-menu-item>
-                                                </div>
-                                            </el-menu-item-group>
-                                        </el-sub-menu>
-                                        <el-sub-menu :index="index + '=2'">
-                                            <template #title>
-                                                <el-icon>
-                                                    <Star />
-                                                </el-icon>
-                                                <span>书籍推荐板块</span>
-                                            </template>
-                                            <el-menu-item-group>
-                                                <div v-for="md in subgroup.moduleList">
-                                                    <el-menu-item v-if="md.id == 2"
-                                                        :index="index + '-' + md.name + '-' + md.subgroupModuleId + '-2'">
-                                                        <el-icon>
-                                                            <Star />
-                                                        </el-icon>
-                                                        <span>{{ md.name }}</span>
-                                                    </el-menu-item>
-                                                </div>
-                                            </el-menu-item-group>
-                                        </el-sub-menu>
-                                        <el-sub-menu :index="index + '=3'">
-                                            <template #title>
-                                                <el-icon>
-                                                    <Connection />
-                                                </el-icon>
-                                                <span>小组投票板块</span>
-                                            </template>
-                                            <el-menu-item-group>
-                                                <div v-for="md in subgroup.moduleList">
-                                                    <el-menu-item v-if="md.id == 3"
-                                                        :index="index + '-' + md.name + '-' + md.subgroupModuleId + '-3'">
-                                                        <el-icon>
-                                                            <Connection />
-                                                        </el-icon>
-                                                        <span>{{ md.name }}</span>
-                                                    </el-menu-item>
-                                                </div>
-                                            </el-menu-item-group>
-                                        </el-sub-menu>
-                                        <!-- <div v-for="md in subgroup.moduleList">
+                                        <div v-for="md in subgroup.moduleList">
                                             <el-menu-item v-if="md.id == 1"
                                                 :index="index + '-' + md.name + '-' + md.subgroupModuleId + '-1'">
                                                 <el-icon>
@@ -290,7 +262,7 @@
                                                 </el-icon>
                                                 <span>{{ md.name }}</span>
                                             </el-menu-item>
-                                        </div> -->
+                                        </div>
                                         <el-menu-item :index="index + '-00'">
                                             <el-icon>
                                                 <Plus />
@@ -304,7 +276,7 @@
                                             <span>删除组件</span>
                                         </el-menu-item>
                                     </el-menu-item-group>
-                                </el-sub-menu>
+                                </el-sub-menu> -->
                                 <el-menu-item v-if="this.isGroupMember" index="-01">
                                     <el-icon>
                                         <Plus />
@@ -370,7 +342,7 @@
                                     </el-col>
                                 </el-row>
                             </div>
-                            <div v-else-if="this.selectMenuIndex.slice(-2) == '-0'">
+                            <!-- <div v-else-if="this.selectMenuIndex.slice(-2) == '-0'">
                                 <el-row style="margin-top: 20px;">
                                     <el-col :span="3" :offset="1">
                                         小组改名：
@@ -469,6 +441,271 @@
                                             @click="onDeleteSubgroupModule(this.subgroupList[this.selectMenuIndex.split('-')[0]].name)">确定</el-button>
                                     </el-col>
                                 </el-row>
+                            </div> -->
+                            <div v-else-if="this.selectMenuIndex.slice(-2) == '-1'">
+                                <el-row>
+                                    <el-col>
+                                        <el-collapse v-if="this.groupManager">
+                                            <el-collapse-item title="小组改名">
+                                                <el-row style="margin-top: 20px;">
+                                                    <el-col :span="3" :offset="1">
+                                                        小组改名：
+                                                    </el-col>
+                                                    <el-col :span="9">
+                                                        <el-input v-model="this.newSubgroupName"></el-input>
+                                                    </el-col>
+                                                    <el-col :span="2" :offset="1">
+                                                        <el-button
+                                                            @click="onUpdateSubgourpName(this.subgroupList[this.selectMenuIndex.split('-')[0]].id)"
+                                                            type="primary">确认</el-button>
+                                                    </el-col>
+                                                    <el-col :span="2">
+                                                        <el-button @click="onCancelUpdateSubgourpName">取消</el-button>
+                                                    </el-col>
+                                                    <el-col :span="4" :offset="2">
+                                                        <el-button type="danger"
+                                                            @click="onDeleteSubgourpName(this.subgroupList[this.selectMenuIndex.split('-')[0]].id)">解散小组</el-button>
+                                                    </el-col>
+                                                </el-row>
+                                                <el-divider />
+                                            </el-collapse-item>
+                                        </el-collapse>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col>
+                                        <el-button type="primary" size="large" style="margin: 10px;"
+                                            @click="onCreateSubgroupNoticeDialogVisible()">
+                                            <el-icon>
+                                                <Plus />
+                                            </el-icon>
+                                            <span>
+                                                新公告
+                                            </span>
+                                        </el-button>
+                                        <div
+                                            v-for="subgroupFrame in this.subgroupList[this.selectMenuIndex.split('-')[0]].subgroupFrameList">
+                                            <subgroupNotice
+                                                :subgroupId="this.subgroupList[this.selectMenuIndex.split('-')[0]].id"
+                                                :moduleName="this.selectMenuIndex.split('-')[1]"
+                                                :subgroupModuleId="this.selectMenuIndex.split('-')[2]"
+                                                :subgroupFrameId="subgroupFrame.id">
+                                            </subgroupNotice>
+                                        </div>
+                                    </el-col>
+                                </el-row>
+                            </div>
+                            <div v-else-if="this.selectMenuIndex.slice(-2) == '-2'">
+                                <el-row>
+                                    <el-col>
+                                        <el-collapse v-if="this.groupManager">
+                                            <el-collapse-item title="小组改名">
+                                                <el-row style="margin-top: 20px;">
+                                                    <el-col :span="3" :offset="1">
+                                                        小组改名：
+                                                    </el-col>
+                                                    <el-col :span="9">
+                                                        <el-input v-model="this.newSubgroupName"></el-input>
+                                                    </el-col>
+                                                    <el-col :span="2" :offset="1">
+                                                        <el-button
+                                                            @click="onUpdateSubgourpName(this.subgroupList[this.selectMenuIndex.split('-')[0]].id)"
+                                                            type="primary">确认</el-button>
+                                                    </el-col>
+                                                    <el-col :span="2">
+                                                        <el-button @click="onCancelUpdateSubgourpName">取消</el-button>
+                                                    </el-col>
+                                                    <el-col :span="4" :offset="2">
+                                                        <el-button type="danger"
+                                                            @click="onDeleteSubgourpName(this.subgroupList[this.selectMenuIndex.split('-')[0]].id)">解散小组</el-button>
+                                                    </el-col>
+                                                </el-row>
+                                                <el-divider />
+                                            </el-collapse-item>
+                                        </el-collapse>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col>
+                                        <el-button type="primary" size="large" style="margin: 10px;"
+                                            @click="onCreateBookRecommendDialogVisible">
+                                            <el-icon>
+                                                <Plus />
+                                            </el-icon>
+                                            <span>
+                                                推荐书籍
+                                            </span>
+                                        </el-button>
+                                        <div
+                                            v-for="subgroupFrame in this.subgroupList[this.selectMenuIndex.split('-')[0]].subgroupFrameList">
+                                            <bookRecommend
+                                                :subgroupId="this.subgroupList[this.selectMenuIndex.split('-')[0]].id"
+                                                :moduleName="this.selectMenuIndex.split('-')[1]"
+                                                :subgroupModuleId="this.selectMenuIndex.split('-')[2]"
+                                                :subgroupFrameId="subgroupFrame.id">
+                                            </bookRecommend>
+                                        </div>
+                                    </el-col>
+                                </el-row>
+                            </div>
+                            <div v-else-if="this.selectMenuIndex.slice(-2) == '-3'">
+                                <el-row>
+                                    <el-col>
+                                        <el-collapse v-if="this.groupManager">
+                                            <el-collapse-item title="小组改名">
+                                                <el-row style="margin-top: 20px;">
+                                                    <el-col :span="3" :offset="1">
+                                                        小组改名：
+                                                    </el-col>
+                                                    <el-col :span="9">
+                                                        <el-input v-model="this.newSubgroupName"></el-input>
+                                                    </el-col>
+                                                    <el-col :span="2" :offset="1">
+                                                        <el-button
+                                                            @click="onUpdateSubgourpName(this.subgroupList[this.selectMenuIndex.split('-')[0]].id)"
+                                                            type="primary">确认</el-button>
+                                                    </el-col>
+                                                    <el-col :span="2">
+                                                        <el-button @click="onCancelUpdateSubgourpName">取消</el-button>
+                                                    </el-col>
+                                                    <el-col :span="4" :offset="2">
+                                                        <el-button type="danger"
+                                                            @click="onDeleteSubgourpName(this.subgroupList[this.selectMenuIndex.split('-')[0]].id)">解散小组</el-button>
+                                                    </el-col>
+                                                </el-row>
+                                                <el-divider />
+                                            </el-collapse-item>
+                                        </el-collapse>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col>
+                                        <el-button type="primary" size="large" style="margin: 10px;"
+                                            @click="createSubgroupVoteDialogVisible = true">
+                                            <el-icon>
+                                                <Plus />
+                                            </el-icon>
+                                            <span>
+                                                发起投票
+                                            </span>
+                                        </el-button>
+                                        <div
+                                            v-for="subgroupFrame in this.subgroupList[this.selectMenuIndex.split('-')[0]].subgroupFrameList">
+                                            <subgroupVote
+                                                :subgroupId="this.subgroupList[this.selectMenuIndex.split('-')[0]].id"
+                                                :moduleName="this.selectMenuIndex.split('-')[1]"
+                                                :subgroupModuleId="this.selectMenuIndex.split('-')[2]"
+                                                :subgroupFrameId="subgroupFrame.id">
+                                            </subgroupVote>
+                                        </div>
+                                    </el-col>
+                                </el-row>
+                            </div>
+                            <div v-else-if="this.selectMenuIndex.slice(-2) == '-4'">
+                                <el-row>
+                                    <el-col>
+                                        <el-collapse v-if="this.groupManager">
+                                            <el-collapse-item title="小组改名">
+                                                <el-row style="margin-top: 20px;">
+                                                    <el-col :span="3" :offset="1">
+                                                        小组改名：
+                                                    </el-col>
+                                                    <el-col :span="9">
+                                                        <el-input v-model="this.newSubgroupName"></el-input>
+                                                    </el-col>
+                                                    <el-col :span="2" :offset="1">
+                                                        <el-button
+                                                            @click="onUpdateSubgourpName(this.subgroupList[this.selectMenuIndex.split('-')[0]].id)"
+                                                            type="primary">确认</el-button>
+                                                    </el-col>
+                                                    <el-col :span="2">
+                                                        <el-button @click="onCancelUpdateSubgourpName">取消</el-button>
+                                                    </el-col>
+                                                    <el-col :span="4" :offset="2">
+                                                        <el-button type="danger"
+                                                            @click="onDeleteSubgourpName(this.subgroupList[this.selectMenuIndex.split('-')[0]].id)">解散小组</el-button>
+                                                    </el-col>
+                                                </el-row>
+                                                <el-divider />
+                                            </el-collapse-item>
+                                        </el-collapse>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col>
+                                        <el-button type="primary" size="large" style="margin: 10px;"
+                                            @click="onCreateBookRecommendDialogVisible">
+                                            <el-icon>
+                                                <Plus />
+                                            </el-icon>
+                                            <span>
+                                                书籍探讨
+                                            </span>
+                                        </el-button>
+                                        <div
+                                            v-for="subgroupFrame in this.subgroupList[this.selectMenuIndex.split('-')[0]].subgroupFrameList">
+                                            <bookComment
+                                                :subgroupId="this.subgroupList[this.selectMenuIndex.split('-')[0]].id"
+                                                :moduleName="this.selectMenuIndex.split('-')[1]"
+                                                :subgroupModuleId="this.selectMenuIndex.split('-')[2]"
+                                                :subgroupFrameId="subgroupFrame.id">
+                                            </bookComment>
+                                        </div>
+                                    </el-col>
+                                </el-row>
+                            </div>
+                            <div v-else-if="this.selectMenuIndex.slice(-2) == '-5'">
+                                <el-row>
+                                    <el-col>
+                                        <el-collapse v-if="this.groupManager">
+                                            <el-collapse-item title="小组改名">
+                                                <el-row style="margin-top: 20px;">
+                                                    <el-col :span="3" :offset="1">
+                                                        小组改名：
+                                                    </el-col>
+                                                    <el-col :span="9">
+                                                        <el-input v-model="this.newSubgroupName"></el-input>
+                                                    </el-col>
+                                                    <el-col :span="2" :offset="1">
+                                                        <el-button
+                                                            @click="onUpdateSubgourpName(this.subgroupList[this.selectMenuIndex.split('-')[0]].id)"
+                                                            type="primary">确认</el-button>
+                                                    </el-col>
+                                                    <el-col :span="2">
+                                                        <el-button @click="onCancelUpdateSubgourpName">取消</el-button>
+                                                    </el-col>
+                                                    <el-col :span="4" :offset="2">
+                                                        <el-button type="danger"
+                                                            @click="onDeleteSubgourpName(this.subgroupList[this.selectMenuIndex.split('-')[0]].id)">解散小组</el-button>
+                                                    </el-col>
+                                                </el-row>
+                                                <el-divider />
+                                            </el-collapse-item>
+                                        </el-collapse>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col>
+                                        <el-button type="primary" size="large" style="margin: 10px;"
+                                            @click="createSubgroupVoteDialogVisible = true">
+                                            <el-icon>
+                                                <Plus />
+                                            </el-icon>
+                                            <span>
+                                                发起活动投票
+                                            </span>
+                                        </el-button>
+                                        <div
+                                            v-for="subgroupFrame in this.subgroupList[this.selectMenuIndex.split('-')[0]].subgroupFrameList">
+                                            <activityVote
+                                                :subgroupId="this.subgroupList[this.selectMenuIndex.split('-')[0]].id"
+                                                :moduleName="this.selectMenuIndex.split('-')[1]"
+                                                :subgroupModuleId="this.selectMenuIndex.split('-')[2]"
+                                                :subgroupFrameId="subgroupFrame.id">
+                                            </activityVote>
+                                        </div>
+                                    </el-col>
+                                </el-row>
                             </div>
                             <div v-else-if="this.selectMenuIndex == '-01'">
                                 <el-row style="margin-top: 20px;">
@@ -482,10 +719,18 @@
                                 <el-divider />
                                 <el-row style="margin-top: 20px; margin-bottom: 20px;">
                                     <el-col>
-                                        <el-transfer ref="newSubgroupMember" v-model="newSubgroup.member" :props="{
+                                        <!-- <el-transfer ref="newSubgroupMember" v-model="newSubgroup.member" :props="{
                                             key: 'id',
                                             label: 'username',
-                                        }" :data="groupMember" :titles="['社团成员', '小组成员']" />
+                                        }" :data="groupMember" :titles="['社团成员', '小组成员']" /> -->
+                                        <el-radio-group v-model="newSubgroup.frameId">
+                                            <el-radio label="1" size="large">模板1</el-radio>
+                                            <el-radio label="2" size="large">模板2</el-radio>
+                                            <el-radio label="3" size="large">模板3</el-radio>
+                                            <el-radio label="4" size="large">模板4</el-radio>
+                                            <el-radio label="5" size="large">模板5</el-radio>
+                                            <el-radio label="6" size="large">模板6</el-radio>
+                                        </el-radio-group>
                                     </el-col>
                                 </el-row>
                                 <el-row>
@@ -604,6 +849,120 @@
             </el-row>
         </div>
     </el-dialog>
+    <el-dialog v-model="createSubgroupNoticeDialogVisible" title="新公告" width="30%"
+        :before-close="beforeCreateSubgroupNoticeDialogClose">
+        <div class="dialog">
+            <el-row justify="center" style="width: 70%; margin-bottom: 20px;">
+                <el-col :span="4">
+                    标题：
+                </el-col>
+                <el-col :span="20">
+                    <el-input v-model="this.newTitle"></el-input>
+                </el-col>
+            </el-row>
+            <el-row justify="center" style="width: 70%; margin-bottom: 20px;">
+                <el-col :span="4">
+                    内容：
+                </el-col>
+                <el-col :span="20">
+                    <el-input v-model="this.newText" type="textarea"></el-input>
+                </el-col>
+            </el-row>
+            <el-row justify="center" style="width: 100%;">
+                <el-col :span="7" style="display: flex; justify-content: center;">
+                    <el-button type="primary" @click="onCreateSubgroupNotice">确认</el-button>
+                </el-col>
+                <el-col :span="7" style="display: flex; justify-content: center;">
+                    <el-button @click="onCancelCreateSubgroupNotice">取消</el-button>
+                </el-col>
+            </el-row>
+        </div>
+    </el-dialog>
+    <el-dialog v-model="createBookRecommendDialogVisible" title="新增书籍推荐" width="40%"
+        :before-close="beforeCreateBookRecommendDialogClose">
+        <div class="dialog">
+            <el-row justify="center" style="width: 80%;">
+                <el-col :span="10">
+                    <el-image :src="this.$http.defaults.baseURL + newBook.bookCover" fit="cover"
+                        style="width: 100%; height: 250px;">
+                    </el-image>
+                </el-col>
+                <el-col :span="12" :offset="2">
+                    <el-row style="margin-top: 10px;">
+                        <el-col>
+                            <el-select v-model="newBookId" filterable @change="onBookChange">
+                                <el-option v-for="book in bookList" :key="book.id" :label="book.name" :value="book.id" />
+                            </el-select>
+                        </el-col>
+                    </el-row>
+                    <el-row style="margin-top: 10px;">
+                        <el-col>
+                            <el-descriptions :column=1 size="small">
+                                <el-descriptions-item label="书名：">{{ newBook.name }}</el-descriptions-item>
+                                <el-descriptions-item label="作者：">{{ newBook.author }}</el-descriptions-item>
+                                <el-descriptions-item label="出版社：">{{ newBook.publisher
+                                }}</el-descriptions-item>
+                                <el-descriptions-item label="出版时间：">{{ newBook.publishTime
+                                }}</el-descriptions-item>
+                                <el-descriptions-item label="译者：">{{ newBook.translator
+                                }}</el-descriptions-item>
+                                <el-descriptions-item label="ISBN：">{{ newBook.isbn }}</el-descriptions-item>
+                            </el-descriptions>
+                        </el-col>
+                    </el-row>
+                </el-col>
+            </el-row>
+            <el-row justify="center" style="width: 80%; margin-top: 20px; margin-bottom: 20px;">
+                <el-col :span="6">
+                    推荐理由：
+                </el-col>
+                <el-col :span="18">
+                    <el-input v-model="this.newBookRecommendReason" type="textarea"></el-input>
+                </el-col>
+            </el-row>
+            <el-row justify="center" style="width: 100%;">
+                <el-col :span="7" style="display: flex; justify-content: center;">
+                    <el-button type="primary" @click="onCreateBookRecommend">确认</el-button>
+                </el-col>
+                <el-col :span="7" style="display: flex; justify-content: center;">
+                    <el-button @click="onCancelCreateBookRecommend">取消</el-button>
+                </el-col>
+            </el-row>
+        </div>
+    </el-dialog>
+    <el-dialog v-model="createSubgroupVoteDialogVisible" title="发起投票" width="40%"
+        :before-close="beforeCreateSubgroupVoteDialogClose">
+        <div class="dialog">
+            <el-row justify="center" style="width: 90%; margin-bottom: 20px;">
+                <el-col :span="2">
+                    标题：
+                </el-col>
+                <el-col :span="22">
+                    <el-input v-model="this.newSubgroupVote.name"></el-input>
+                </el-col>
+            </el-row>
+            <el-row justify="center" style="width: 90%; margin-bottom: 20px;">
+                <el-col :span="2">
+                    描述：
+                </el-col>
+                <el-col :span="22">
+                    <el-input v-model="this.newSubgroupVote.description" type="textarea"></el-input>
+                </el-col>
+            </el-row>
+            <el-transfer v-model="this.newSubgroupVote.voter" :props="{
+                key: 'id',
+                label: 'username',
+            }" :data="this.groupMember" :titles="['小组成员', '可投票成员']" />
+            <el-row justify="center" style="width: 100%; margin-top: 20px;">
+                <el-col :span="7" style="display: flex; justify-content: center;">
+                    <el-button type="primary" @click="onCreateSubgroupVote">确认</el-button>
+                </el-col>
+                <el-col :span="7" style="display: flex; justify-content: center;">
+                    <el-button @click="onCancelCreateSubgroupVote">取消</el-button>
+                </el-col>
+            </el-row>
+        </div>
+    </el-dialog>
 </template>
 
 <script>
@@ -611,9 +970,11 @@ import myHead from '../components/myHead.vue'
 import subgroupNotice from '../components/subgroupNotice.vue'
 import bookRecommend from '../components/bookRecommend.vue'
 import subgroupVote from '../components/subgroupVote.vue'
+import bookComment from '../components/bookComment.vue'
+import activityVote from '../components/activityVote.vue'
 import { ElMessage } from 'element-plus'
 export default {
-    components: { myHead, subgroupNotice, bookRecommend, subgroupVote },
+    components: { myHead, subgroupNotice, bookRecommend, subgroupVote, bookComment, activityVote },
     data() {
         return {
             userId: JSON.parse(sessionStorage.getItem('id')),
@@ -639,7 +1000,11 @@ export default {
             selectMenuName: null,
             groupFavouriteList: [],
             totalGroupFavourite: null,
-            newSubgroup: {},
+            newSubgroup: {
+                name: null,
+                member: [],
+                frameId: "1"
+            },
             newSubgroupName: null,
             topTenBook: [],
             deleteModuleName: null,
@@ -662,7 +1027,18 @@ export default {
             groupFavouriteDialogVisible: false,
             newBookId: null,
             newBook: {},
-            bookList: []
+            bookList: [],
+            createSubgroupNoticeDialogVisible: false,
+            newTitle: null,
+            newText: null,
+            createBookRecommendDialogVisible: false,
+            newBookRecommendReason: null,
+            createSubgroupVoteDialogVisible: false,
+            newSubgroupVote: {
+                name: null,
+                description: null,
+                voter: []
+            },
         }
     },
     async mounted() {
@@ -919,7 +1295,10 @@ export default {
             window.location.href = newURL
         },
         async onCreateSubgroup() {
-            const { data: res } = await this.$http.post('/subgroup/createSubgroup?name=' + this.newSubgroup.name + '&groupId=' + this.groupId, this.newSubgroup.member)
+            for (let index in this.groupMember) {
+                this.newSubgroup.member.push(this.groupMember[index].id)
+            }
+            const { data: res } = await this.$http.post('/subgroup/createSubgroup?name=' + this.newSubgroup.name + '&groupId=' + this.groupId + '&frameId=' + this.newSubgroup.frameId, this.newSubgroup.member)
             if (res.code === 1) {
                 ElMessage({
                     message: res.message,
@@ -1069,6 +1448,107 @@ export default {
                 }
             }
             return false
+        },
+        onCreateSubgroupNoticeDialogVisible() {
+            this.newTitle = null
+            this.newText = null
+            this.createSubgroupNoticeDialogVisible = true
+        },
+        beforeCreateSubgroupNoticeDialogClose() {
+            this.onCancelCreateSubgroupNotice()
+            this.createSubgroupNoticeDialogVisible = false
+        },
+        async onCreateSubgroupNotice() {
+            const { data: res } = await this.$http.post('/subgroup/createSubgroupNotice?subgroupId=' + this.subgroupList[this.selectMenuIndex.split('-')[0]].id, { 'subgroupModelId': 0, 'title': this.newTitle, 'text': this.newText, 'userId': this.userId })
+            if (res.code === 1) {
+                ElMessage({
+                    message: res.message,
+                    type: 'success'
+                })
+                // const { data: res1 } = await this.$http.get('/subgroup/getSubgroupNotice?id=' + this.subgroupFrameId)
+                // this.subgroupNoticeList = res1.data.subgroupNoticeList
+                this.$router.go(0)
+                this.beforeCreateSubgroupNoticeDialogClose()
+            } else {
+                ElMessage({
+                    message: res.message,
+                    type: 'error'
+                })
+            }
+        },
+        onCancelCreateSubgroupNotice() {
+            this.newTitle = null
+            this.newText = null
+        },
+        onCreateBookRecommendDialogVisible() {
+            this.newBookId = null
+            this.newBook = {}
+            this.newBookRecommendReason = null
+            this.createBookRecommendDialogVisible = true
+        },
+        beforeCreateBookRecommendDialogClose() {
+            this.onCancelCreateBookRecommend()
+            this.createBookRecommendDialogVisible = false
+        },
+        async onCreateBookRecommend() {
+            const { data: res } = await this.$http.post('/subgroup/addBookRecommend?subgroupId=' + this.subgroupList[this.selectMenuIndex.split('-')[0]].id + '&subgroupName=' + this.subgroupList[this.selectMenuIndex.split('-')[0]].name, { 'bookId': this.newBookId, 'recommendReason': this.newBookRecommendReason, 'userId': this.userId, 'subgroupModuleId': 0 })
+            if (res.code === 1) {
+                ElMessage({
+                    message: res.message,
+                    type: 'success'
+                })
+                // const { data: res1 } = await this.$http.get('/subgroup/getBookRecommend?id=' + this.subgroupFrameId)
+                // this.bookRecommendList = res1.data.bookRecommendList
+                this.$router.go(0)
+                this.beforeCreateBookRecommendDialogClose()
+            } else {
+                ElMessage({
+                    message: res.message,
+                    type: 'error'
+                })
+            }
+        },
+        onCancelCreateBookRecommend() {
+            this.newBookId = null
+            this.newBook = {}
+            this.newBookRecommendReason = null
+        },
+        onBookChange(value) {
+            for (const index in this.bookList) {
+                if (this.bookList[index].id == value) {
+                    this.newBook = this.bookList[index]
+                    break
+                }
+            }
+        },
+        beforeCreateSubgroupVoteDialogClose() {
+            this.onCancelCreateSubgroupVote()
+            this.createSubgroupVoteDialogVisible = false
+        },
+        async onCreateSubgroupVote() {
+            const { data: res } = await this.$http.post('/subgroup/createSubgroupVote?name=' + String(this.newSubgroupVote.name) + '&description=' + String(this.newSubgroupVote.description) + '&subgroupId=' + this.subgroupList[this.selectMenuIndex.split('-')[0]].id + '&subgroupName=' + this.subgroupList[this.selectMenuIndex.split('-')[0]].name, this.newSubgroupVote.voter)
+            if (res.code === 1) {
+                ElMessage({
+                    message: res.message,
+                    type: 'success'
+                })
+                // const { data: subgroupVoteListRes } = await this.$http.get('/subgroup/getSubgroupVote?subgroupModuleId=' + String(this.subgroupFrameId))
+                // this.subgroupVoteList = subgroupVoteListRes.data.subgroupVoteList
+                this.$router.go(0)
+                this.beforeCreateSubgroupVoteDialogClose()
+            } else {
+                ElMessage({
+                    message: res.message,
+                    type: 'error'
+                })
+            }
+        },
+        onCancelCreateSubgroupVote() {
+            this.newSubgroupVote = {
+                name: null,
+                description: null,
+                voter: []
+            }
         }
     }
 }

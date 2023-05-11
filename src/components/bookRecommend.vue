@@ -1,5 +1,5 @@
 <template>
-    <el-row justify="space-between">
+    <!-- <el-row justify="space-between">
         <el-col :span="4">
             <el-button type="primary" size="large" style="margin: 10px;" @click="onCreateBookRecommendDialogVisible">
                 <el-icon>
@@ -22,7 +22,7 @@
             </el-button>
         </el-col>
     </el-row>
-    <el-divider />
+    <el-divider /> -->
     <el-row v-for="(bookRecommend, index) in bookRecommendList">
         <el-col>
             <el-card style="margin: 10px;">
@@ -85,7 +85,7 @@
                             </el-col>
                             <el-col :span="6">
                                 <el-button :disabled="bookRecommend.userId != this.userId"
-                                    @click="onDeleteBookRecommend(bookRecommend.id)" type="danger">删除书籍推荐</el-button>
+                                    @click="onDeleteBookRecommend(this.subgroupFrameId)" type="danger">删除书籍推荐</el-button>
                             </el-col>
                         </el-row>
                     </el-col>
@@ -192,7 +192,7 @@
 <script>
 import { ElMessage } from 'element-plus'
 export default {
-    props: ['subgroupId', 'moduleName', 'subgroupModuleId'],
+    props: ['subgroupId', 'moduleName', 'subgroupModuleId', 'subgroupFrameId'],
     data() {
         return {
             bookList: [],
@@ -210,13 +210,13 @@ export default {
     async mounted() {
         this.userId = JSON.parse(sessionStorage.getItem('id'))
         this.newSubgroupModuleName = this.moduleName
-        const { data: res } = await this.$http.get('/subgroup/getBookRecommend?name=' + this.moduleName)
+        const { data: res } = await this.$http.get('/subgroup/getBookRecommend?id=' + this.subgroupFrameId)
         this.bookRecommendList = res.data.bookRecommendList
         const { data: bookListRes } = await this.$http.get('/book/allBook')
         this.bookList = bookListRes.data.bookList
     },
     async updated() {
-        const { data: res } = await this.$http.get('/subgroup/getBookRecommend?name=' + this.moduleName)
+        const { data: res } = await this.$http.get('/subgroup/getBookRecommend?id=' + this.subgroupFrameId)
         this.bookRecommendList = res.data.bookRecommendList
     },
     methods: {
@@ -250,7 +250,7 @@ export default {
                     message: res.message,
                     type: 'success'
                 })
-                const { data: res1 } = await this.$http.get('/subgroup/getBookRecommend?name=' + this.moduleName)
+                const { data: res1 } = await this.$http.get('/subgroup/getBookRecommend?id=' + this.subgroupFrameId)
                 this.bookRecommendList = res1.data.bookRecommendList
                 this.beforeCreateBookRecommendDialogClose()
             } else {
@@ -267,7 +267,7 @@ export default {
                     message: res.message,
                     type: 'success'
                 })
-                const { data: res1 } = await this.$http.get('/subgroup/getBookRecommend?name=' + this.moduleName)
+                const { data: res1 } = await this.$http.get('/subgroup/getBookRecommend?id=' + this.subgroupFrameId)
                 this.bookRecommendList = res1.data.bookRecommendList
                 this.beforeUpdateBookRecommendDialogClose()
             } else {
@@ -301,8 +301,7 @@ export default {
                     message: res.message,
                     type: 'success'
                 })
-                const { data: res1 } = await this.$http.get('/subgroup/getBookRecommend?name=' + this.moduleName)
-                this.bookRecommendList = res1.data.bookRecommendList
+                const { data: res1 } = await this.$http.get('/subgroup/getBookRecommend?id=' + this.subgroupFrameId)
             } else {
                 ElMessage({
                     message: res.message,

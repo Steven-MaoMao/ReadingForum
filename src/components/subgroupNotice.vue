@@ -1,5 +1,5 @@
 <template>
-    <el-row justify="space-between">
+    <!-- <el-row justify="space-between">
         <el-col :span="4">
             <el-button type="primary" size="large" style="margin: 10px;"
                 @click="onCreateSubgroupNoticeDialogVisible(index)">
@@ -23,7 +23,7 @@
             </el-button>
         </el-col>
     </el-row>
-    <el-divider />
+    <el-divider /> -->
     <el-row v-for="(subgroupNotice, index) in subgroupNoticeList">
         <el-col>
             <el-card style="margin: 10px;">
@@ -59,7 +59,7 @@
                     </el-col>
                     <el-col :span="4">
                         <el-button :disabled="this.userId != this.subgroupNoticeList[index].userId" type="danger"
-                            @click="onDeleteSubgroupNotice(subgroupNotice.id)">删除公告</el-button>
+                            @click="onDeleteSubgroupNotice(this.subgroupFrameId)">删除公告</el-button>
                     </el-col>
                 </el-row>
             </el-card>
@@ -149,7 +149,7 @@
 <script>
 import { ElMessage } from 'element-plus'
 export default {
-    props: ['subgroupId', 'moduleName', 'subgroupModuleId'],
+    props: ['subgroupId', 'moduleName', 'subgroupModuleId', 'subgroupFrameId'],
     data() {
         return {
             subgroupNoticeList: [],
@@ -166,12 +166,12 @@ export default {
     async mounted() {
         this.userId = JSON.parse(sessionStorage.getItem('id'))
         this.newSubgroupModuleName = this.moduleName
-        const { data: res } = await this.$http.get('/subgroup/getSubgroupNotice?name=' + this.moduleName)
+        const { data: res } = await this.$http.get('/subgroup/getSubgroupNotice?id=' + this.subgroupFrameId)
         this.subgroupNoticeList = res.data.subgroupNoticeList
     },
     async updated() {
         //this.newSubgroupModuleName = this.moduleName
-        const { data: res } = await this.$http.get('/subgroup/getSubgroupNotice?name=' + this.moduleName)
+        const { data: res } = await this.$http.get('/subgroup/getSubgroupNotice?id=' + this.subgroupFrameId)
         this.subgroupNoticeList = res.data.subgroupNoticeList
     },
     methods: {
@@ -188,7 +188,7 @@ export default {
                     message: res.message,
                     type: 'success'
                 })
-                const { data: res1 } = await this.$http.get('/subgroup/getSubgroupNotice?name=' + this.moduleName)
+                const { data: res1 } = await this.$http.get('/subgroup/getSubgroupNotice?id=' + this.subgroupFrameId)
                 this.subgroupNoticeList = res1.data.subgroupNoticeList
             } else {
                 ElMessage({
@@ -224,13 +224,13 @@ export default {
             this.changeSubgroupModuleNameDialogVisible = false
         },
         async onCreateSubgroupNotice() {
-            const { data: res } = await this.$http.post('/subgroup/createSubgroupNotice', { 'subgroupModelId': this.subgroupModuleId, 'title': this.newTitle, 'text': this.newText, 'userId': this.userId })
+            const { data: res } = await this.$http.post('/subgroup/createSubgroupNotice?subgroupId=' + this.subgroupId, { 'subgroupModelId': this.subgroupModuleId, 'title': this.newTitle, 'text': this.newText, 'userId': this.userId })
             if (res.code === 1) {
                 ElMessage({
                     message: res.message,
                     type: 'success'
                 })
-                const { data: res1 } = await this.$http.get('/subgroup/getSubgroupNotice?name=' + this.moduleName)
+                const { data: res1 } = await this.$http.get('/subgroup/getSubgroupNotice?id=' + this.subgroupFrameId)
                 this.subgroupNoticeList = res1.data.subgroupNoticeList
                 this.beforeCreateSubgroupNoticeDialogClose()
             } else {
@@ -247,7 +247,7 @@ export default {
                     message: res.message,
                     type: 'success'
                 })
-                const { data: res1 } = await this.$http.get('/subgroup/getSubgroupNotice?name=' + this.moduleName)
+                const { data: res1 } = await this.$http.get('/subgroup/getSubgroupNotice?id=' + this.subgroupFrameId)
                 this.subgroupNoticeList = res1.data.subgroupNoticeList
                 this.beforeChangeSubgroupNoticeDialogClose()
             } else {
