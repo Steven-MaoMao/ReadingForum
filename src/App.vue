@@ -3,7 +3,7 @@ import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <template>
-  <div id="">
+  <div id="background">
     <RouterView />
   </div>
 </template>
@@ -16,7 +16,7 @@ import { RouterLink, RouterView } from 'vue-router'
 body {
   margin: 0;
   padding: 0;
-  border: 0
+  border: 0;
 }
 
 #background {
@@ -28,5 +28,20 @@ body {
   width: 100%;
   height: 100%;
   z-index: 0;
+  min-height: 750px;
+}
+
+.el-header {
+  background-color: rgba(255, 255, 255);
+  /*box-shadow: 0px 6px 6px 0px #95d475 inset*/
+}
+
+.el-row {
+  background-color: rgba(255, 255, 255);
+  border-radius: 20px;
+}
+
+.block {
+  /*box-shadow: 0px 0px 16px 2px #95d475 inset*/
 }
 </style>

@@ -2,7 +2,7 @@
     <el-card style="margin: 10px;">
         <template #header>
             <el-row>
-                <el-col :span="15" style="display: flex; align-items: center; font-weight: 600; font-size: larger;">
+                <el-col :span="13" style="display: flex; align-items: center; font-weight: 600; font-size: larger;">
                     {{ this.vote.name }}
                 </el-col>
                 <el-col :span="2" @click="gotoUser(this.vote.user.id)">
@@ -15,6 +15,9 @@
                 </el-col>
                 <el-col :span="4" style="display: flex; align-items: center;">
                     {{ this.vote.time }}
+                </el-col>
+                <el-col :span="2" style="display: flex; align-items: center;">
+                    <el-button type="danger" @click="deleteSubgroupFrame">删除</el-button>
                 </el-col>
                 <!-- <el-col :span="3" style="display: flex; align-items: center;">
                     <el-button @click="onChangeSubgroupVoteDialogVisible(index)">修改投票</el-button>
@@ -38,7 +41,7 @@
                         </el-icon>
                     </el-col>
                     <el-col :span="5">
-                        赞成
+                        {{ this.vote.yesWord }}
                     </el-col>
                 </el-row>
                 <div v-for="voter in this.vote.voterList" style="margin: 10px;">
@@ -90,7 +93,7 @@
                         </el-icon>
                     </el-col>
                     <el-col :span="5">
-                        反对
+                        {{ this.vote.noWord }}
                     </el-col>
                 </el-row>
                 <div v-for="voter in this.vote.voterList" style="margin: 10px;">
@@ -111,12 +114,12 @@
         </el-row>
         <el-row justify="center" style="margin-top: 20px;">
             <el-col :span="8" style="display: flex; justify-content: center;">
-                <el-button type="primary" :disabled="isDisabled(this.vote.voterList)"
-                    @click="voteYes(this.vote.id)">赞成</el-button>
+                <el-button type="primary" :disabled="isDisabled(this.vote.voterList)" @click="voteYes(this.vote.id)">{{
+                    this.vote.yesWord }}</el-button>
             </el-col>
             <el-col :span="8" style="display: flex; justify-content: center;">
-                <el-button type="danger" :disabled="isDisabled(this.vote.voterList)"
-                    @click="voteNo(this.vote.id)">反对</el-button>
+                <el-button type="danger" :disabled="isDisabled(this.vote.voterList)" @click="voteNo(this.vote.id)">{{
+                    this.vote.noWord }}</el-button>
             </el-col>
         </el-row>
         <el-divider />
@@ -182,6 +185,8 @@ export default {
             noticeList: [],
             vote: {
                 user: {},
+                yesWord: null,
+                noWord: null
             },
             newComment: null
         }
@@ -250,6 +255,21 @@ export default {
                 const { data: noticeListRes } = await this.$http.get('/subgroup/getSubgroupNotice?id=' + this.subgroupFrameId)
                 this.noticeList = noticeListRes.data.subgroupNoticeList
                 this.newComment = null
+            } else {
+                ElMessage({
+                    message: res.message,
+                    type: 'error'
+                })
+            }
+        },
+        async deleteSubgroupFrame() {
+            const { data: res } = await this.$http.delete('/subgroup/deleteSubgroupFrame?id=' + this.subgroupFrameId)
+            if (res.code === 1) {
+                ElMessage({
+                    message: res.message,
+                    type: 'success'
+                })
+                this.$router.go(0)
             } else {
                 ElMessage({
                     message: res.message,

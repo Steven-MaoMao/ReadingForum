@@ -1,5 +1,5 @@
 <template>
-    <el-row justify="center">
+    <el-row justify="center" style="background-color: rgba(255,255,255,0);">
         <el-col>
             <div class="main">
                 <el-row justify="center">
@@ -98,6 +98,7 @@ export default {
 
 <style scoped>
 .main {
+    background-color: white;
     width: 400px;
     height: 300px;
     margin-top: 200px;

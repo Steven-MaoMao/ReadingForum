@@ -1,46 +1,46 @@
 <template>
-  <el-row justify="center">
-    <el-col>
-      <div class="main">
-        <el-row justify="center">
-          <el-col :span="24">
-            <span class="title">登录</span>
-          </el-col>
-        </el-row>
-        <el-row justify="center">
-          <el-col :span="24">
-            <el-form ref="loginFormRef" :model="loginForm" :rules="loginFormRules" label-position="left"
-              label-width="80px">
-              <el-form-item label="账号" prop="username">
-                <el-input v-model="loginForm.username" />
-              </el-form-item>
-              <el-form-item label="密码" prop="password">
-                <el-input v-model="loginForm.password" type="password" show-password />
-              </el-form-item>
-            </el-form>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="16">
-            <el-checkbox v-model="autoLogin" label="自动登录" />
-          </el-col>
-        </el-row>
-        <el-row justify="center" style="margin: 20px;">
-          <el-col :span="10">
-            <el-button type="primary" @click="onSubmit">登录</el-button>
-          </el-col>
-          <el-col :span="10">
-            <el-button @click="onCancel">取消</el-button>
-          </el-col>
-        </el-row>
-        <el-row justify="end">
-          <el-col :span="8">
-            <el-button text @click="onToRegister">没有账号>></el-button>
-          </el-col>
-        </el-row>
-      </div>
-    </el-col>
-  </el-row>
+    <el-row justify="center" style="background-color: rgba(255,255,255,0);">
+      <el-col>
+        <div class="main">
+          <el-row justify="center">
+            <el-col :span="24">
+              <span class="title">登录</span>
+            </el-col>
+          </el-row>
+          <el-row justify="center">
+            <el-col :span="24">
+              <el-form ref="loginFormRef" :model="loginForm" :rules="loginFormRules" label-position="left"
+                label-width="80px">
+                <el-form-item label="账号" prop="username">
+                  <el-input v-model="loginForm.username" />
+                </el-form-item>
+                <el-form-item label="密码" prop="password">
+                  <el-input v-model="loginForm.password" type="password" show-password />
+                </el-form-item>
+              </el-form>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="16">
+              <el-checkbox v-model="autoLogin" label="自动登录" />
+            </el-col>
+          </el-row>
+          <el-row justify="center" style="margin: 20px;">
+            <el-col :span="10">
+              <el-button type="primary" @click="onSubmit">登录</el-button>
+            </el-col>
+            <el-col :span="10">
+              <el-button @click="onCancel">取消</el-button>
+            </el-col>
+          </el-row>
+          <el-row justify="end">
+            <el-col :span="8">
+              <el-button text @click="onToRegister">没有账号>></el-button>
+            </el-col>
+          </el-row>
+        </div>
+      </el-col>
+    </el-row>
 </template>
 
 <script>
@@ -106,9 +106,11 @@ export default {
 
 <style scoped>
 .main {
+  background-color: white;
   width: 400px;
   height: 320px;
   margin-top: 200px;
+  margin-bottom: 200px;
   padding: 10px;
   box-shadow: var(--el-box-shadow-dark);
 }

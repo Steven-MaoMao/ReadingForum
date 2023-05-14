@@ -1,7 +1,7 @@
 <template>
     <el-card style="margin: 10px;">
         <template #header>
-            <el-row @click="gotoUser(this.bookList[0].user.id)">
+            <el-row>
                 <!-- <el-col :span="2" style="display: flex; align-items: center;">
                     <el-avatar :src="this.$http.defaults.baseURL + this.bookList[0].user.avatar">{{
                         this.bookList[0].user.username }}</el-avatar>
@@ -13,11 +13,14 @@
                 <el-col :span="18" v-else style="display: flex; align-items: center;">
                     {{ this.bookList[0].user.username }}
                 </el-col> -->
-                <el-col :span="20" style="display: flex; align-items: center; font-weight: 600; font-size: larger;">
+                <el-col :span="18" style="display: flex; align-items: center; font-weight: 600; font-size: larger;">
                     {{ this.bookList[0].book.name }}
                 </el-col>
                 <el-col :span="4" style="display: flex; align-items: center;">
                     {{ this.bookList[0].time }}
+                </el-col>
+                <el-col :span="2" style="display: flex; align-items: center;">
+                    <el-button type="danger" @click="deleteSubgroupFrame">删除</el-button>
                 </el-col>
             </el-row>
         </template>
@@ -136,7 +139,9 @@ export default {
         return {
             userId: null,
             bookList: [{
-                book: {},
+                book: {
+                    name: null,
+                },
                 user: {}
             }],
             noticeList: [],
@@ -161,6 +166,21 @@ export default {
                 const { data: noticeListRes } = await this.$http.get('/subgroup/getSubgroupNotice?id=' + this.subgroupFrameId)
                 this.noticeList = noticeListRes.data.subgroupNoticeList
                 this.newComment = null
+            } else {
+                ElMessage({
+                    message: res.message,
+                    type: 'error'
+                })
+            }
+        },
+        async deleteSubgroupFrame() {
+            const { data: res } = await this.$http.delete('/subgroup/deleteSubgroupFrame?id=' + this.subgroupFrameId)
+            if (res.code === 1) {
+                ElMessage({
+                    message: res.message,
+                    type: 'success'
+                })
+                this.$router.go(0)
             } else {
                 ElMessage({
                     message: res.message,

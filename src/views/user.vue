@@ -1,6 +1,6 @@
 <template>
     <el-container>
-        <el-header height="auto" style="padding: 20px; box-shadow: var(--el-box-shadow-lighter);">
+        <el-header height="auto" style="padding: 20px;  ">
             <myHead :avatar="this.avatar"></myHead>
         </el-header>
         <div class="container">
@@ -284,7 +284,7 @@ export default {
 .block {
     margin: 20px;
     padding: 20px;
-    box-shadow: var(--el-box-shadow-lighter);
+     
 }
 
 .favouriteList {

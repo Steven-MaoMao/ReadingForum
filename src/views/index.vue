@@ -1,24 +1,57 @@
 <template>
     <el-container>
-        <el-header height="auto" style="padding: 20px; box-shadow: var(--el-box-shadow-lighter);">
+        <el-header height="auto" style="padding: 20px;  ">
             <myHead :avatar="this.avatar"></myHead>
         </el-header>
+        <el-drawer v-model="drawer" title="选择书籍大类" direction="ltr" size="20%">
+            <el-row>
+                <el-card shadow="hover" style="width: 100%; margin: 5px;" @click="drawer = false; isNotComputer = false">计算机类</el-card>
+            </el-row>
+            <el-row>
+                <el-card shadow="hover" style="width: 100%; margin: 5px;" @click="drawer = false; isNotComputer = true">电子信息类</el-card>
+            </el-row>
+            <el-row>
+                <el-card shadow="hover" style="width: 100%; margin: 5px;" @click="drawer = false; isNotComputer = true">力学类</el-card>
+            </el-row>
+            <el-row>
+                <el-card shadow="hover" style="width: 100%; margin: 5px;" @click="drawer = false; isNotComputer = true">机械类</el-card>
+            </el-row>
+            <el-row>
+                <el-card shadow="hover" style="width: 100%; margin: 5px;" @click="drawer = false; isNotComputer = true">土木工程类</el-card>
+            </el-row>
+            <el-row>
+                <el-card shadow="hover" style="width: 100%; margin: 5px;" @click="drawer = false; isNotComputer = true">电气工程类</el-card>
+            </el-row>
+        </el-drawer>
         <el-container>
             <el-aside width="350px" style="padding: 20px;">
                 <el-row class="block">
                     <el-col>
-                        <el-button type="primary" style="width: 100%; height: 50px;"
-                            @click="this.uploadBookDialogVisible = true">
-                            <el-icon size="20">
-                                <Upload />
-                            </el-icon>
-                            <div style="font-weight: 600; font-size: larger; margin-left: 10px;">上传书籍</div>
-                        </el-button>
+                        <el-row>
+                            <el-button type="primary" style="width: 100%; height: 50px;"
+                                @click="this.uploadBookDialogVisible = true">
+                                <el-icon size="20">
+                                    <Upload />
+                                </el-icon>
+                                <div style="font-weight: 600; font-size: larger; margin-left: 10px;">上传书籍</div>
+                            </el-button>
+                        </el-row>
+                        <el-row style="margin-top: 20px;">
+                            <el-button type="primary" style="width: 100%; height: 50px;" @click="drawer = true">
+                                <el-icon size="20">
+                                    <More />
+                                </el-icon>
+                                <div style="font-weight: 600; font-size: larger; margin-left: 10px;">选择主题</div>
+                            </el-button>
+                        </el-row>
                     </el-col>
                 </el-row>
                 <el-row class="block">
                     <el-col>
-                        <el-card shadow="never">
+                        <el-row v-if="this.isNotComputer">
+                            <el-empty />
+                        </el-row>
+                        <el-card shadow="never" v-else>
                             <template #header>
                                 <div>
                                     <span style="font-size: larger; font-weight: 600;">Top Ten Books</span>
@@ -37,7 +70,10 @@
                 </el-row>
                 <el-row class="block">
                     <el-col>
-                        <el-card shadow="never">
+                        <el-row v-if="this.isNotComputer">
+                            <el-empty />
+                        </el-row>
+                        <el-card shadow="never" v-else>
                             <template #header>
                                 <div>
                                     <span style="font-size: larger; font-weight: 600;">Top Five Tags</span>
@@ -62,7 +98,10 @@
                             <div style="font-size: x-large; font-weight: 600;">Top Three Books</div>
                             <el-link @click="gotoBookList">更多>></el-link>
                         </div>
-                        <el-row justify="center">
+                        <el-row v-if="this.isNotComputer">
+                            <el-empty />
+                        </el-row>
+                        <el-row justify="center" v-else>
                             <el-col :span="18">
                                 <el-carousel type="card" height="600px">
                                     <el-carousel-item v-for="book in this.topThreeBook" :key="book">
@@ -99,7 +138,10 @@
                             <div style="font-size: x-large; font-weight: 600;">Latest Five Books</div>
                             <el-link @click="gotoBookList">更多>></el-link>
                         </div>
-                        <el-row>
+                        <el-row v-if="this.isNotComputer">
+                            <el-empty />
+                        </el-row>
+                        <el-row v-else>
                             <el-col>
                                 <ul class="latestFiveBookList">
                                     <li class="latestFiveBook" type="none" v-for="book in latestFiveBook">
@@ -136,7 +178,10 @@
                             <div style="font-size: x-large; font-weight: 600;">Recommended Books</div>
                             <el-link @click="gotoBookList">更多>></el-link>
                         </div>
-                        <el-row>
+                        <el-row v-if="this.isNotComputer">
+                            <el-empty />
+                        </el-row>
+                        <el-row v-else>
                             <el-col>
                                 <ul class="latestFiveBookList">
                                     <li class="latestFiveBook" type="none" v-for="book in recommendBook">
@@ -173,7 +218,10 @@
                             <div style="font-size: x-large; font-weight: 600;">Top Five Groups</div>
                             <el-link @click="gotoGroupList">更多>></el-link>
                         </div>
-                        <el-row>
+                        <el-row v-if="this.isNotComputer">
+                            <el-empty />
+                        </el-row>
+                        <el-row v-else>
                             <el-col>
                                 <ul class="latestFiveBookList">
                                     <li class="latestFiveBook" type="none" v-for="group in topFiveGroup">
@@ -292,6 +340,8 @@ export default {
                 publisher: [{ required: true, message: '不能为空', trigger: 'blur' }]
             },
             userId: null,
+            drawer: false,
+            isNotComputer: false
         }
     },
     async mounted() {
@@ -415,7 +465,7 @@ export default {
 .block {
     margin: 20px;
     padding: 20px;
-    box-shadow: var(--el-box-shadow-lighter);
+
 }
 
 .latestFiveBookList {

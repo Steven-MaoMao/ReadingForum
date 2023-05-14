@@ -147,6 +147,41 @@
                 <el-button type="danger" :disabled="isDisabled(this.vote.voterList)" @click="voteNo(this.vote.id)">{{
                     this.vote.noWord }}</el-button>
             </el-col>
+        </el-row><el-divider />
+        <el-row>
+            <el-col :offset="1" :span="10">
+                <el-input v-model="newComment"></el-input>
+            </el-col>
+            <el-col :offset="1" :span="2">
+                <el-button type="primary" @click="this.onComment">留言</el-button>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col>
+                <el-card style="margin: 10px; margin-top: 30px; border-radius: 20px;" v-for="notice in noticeList">
+                    <template #header>
+                        <el-row>
+                            <el-col :span="2" @click="gotoUser(notice.user.id)">
+                                <el-avatar :src="this.$http.defaults.baseURL + notice.user.avatar">{{
+                                    notice.user.username }}</el-avatar>
+                            </el-col>
+                            <el-col :span="18" style="display: flex; align-items: center;"
+                                @click="gotoUser(notice.user.id)">
+                                <div v-if="notice.user.nickname !== null">{{ notice.user.nickname }}</div>
+                                <div v-else>{{ notice.user.username }}</div>
+                            </el-col>
+                            <el-col :span="4" style="display: flex; align-items: center;">
+                                {{ notice.time }}
+                            </el-col>
+                        </el-row>
+                    </template>
+                    <el-row>
+                        <el-col>
+                            {{ notice.text }}
+                        </el-col>
+                    </el-row>
+                </el-card>
+            </el-col>
         </el-row>
     </el-card>
 </template>
@@ -167,6 +202,8 @@ export default {
                 yesWord: null,
                 noWord: null
             },
+            noticeList: [],
+            newComment: null
         }
     },
     async mounted() {
@@ -175,6 +212,8 @@ export default {
         this.bookList = bookListRes.data.bookRecommendList
         const { data: subgroupVoteListRes } = await this.$http.get('/subgroup/getSubgroupVote?subgroupModuleId=' + String(this.subgroupFrameId))
         this.vote = subgroupVoteListRes.data.subgroupVoteList[0]
+        const { data: noticeListRes } = await this.$http.get('/subgroup/getSubgroupNotice?id=' + this.subgroupFrameId)
+        this.noticeList = noticeListRes.data.subgroupNoticeList
     },
     methods: {
         gotoUser(id) {
@@ -237,7 +276,24 @@ export default {
                     type: 'error'
                 })
             }
-        }
+        },
+        async onComment() {
+            const { data: res } = await this.$http.post('/subgroup/newComment?comment=' + this.newComment + '&subgroupFrameId=' + this.subgroupFrameId)
+            if (res.code === 1) {
+                ElMessage({
+                    message: res.message,
+                    type: 'success'
+                })
+                const { data: noticeListRes } = await this.$http.get('/subgroup/getSubgroupNotice?id=' + this.subgroupFrameId)
+                this.noticeList = noticeListRes.data.subgroupNoticeList
+                this.newComment = null
+            } else {
+                ElMessage({
+                    message: res.message,
+                    type: 'error'
+                })
+            }
+        },
     }
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
     <!-- <el-container>
         <el-header> -->
-    <el-row justify="space-around">
+    <el-row justify="space-around" style="background-color: rgb(75, 149, 227, 0);">
         <el-col :span="4" style="display: flex; justify-content: center; align-items: center;">
             <a class="title" @click="this.$router.push('/')">阅读论坛</a>
         </el-col>
@@ -11,7 +11,7 @@
                     <el-input v-model="this.keyword"></el-input>
                 </el-col>
                 <el-col :span="3">
-                    <el-button @click="search">搜索</el-button>
+                    <el-button type="primary" @click="search">搜索</el-button>
                 </el-col>
             </el-row>
         </el-col>
@@ -129,5 +129,8 @@ export default {
     font-size: xx-large;
     font-weight: 600;
     user-select: none;
+    color: #409EFF;
+    letter-spacing: 0;
+    text-shadow: 0px 1px 0px #999, 0px 2px 0px #888, 0px 3px 0px #777, 0px 4px 0px #666, 0px 5px 0px #555, 0px 6px 0px #444, 0px 7px 0px #333, 0px 8px 7px #001135
 }
 </style>

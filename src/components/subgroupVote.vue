@@ -65,7 +65,7 @@
                                 </el-icon>
                             </el-col>
                             <el-col :span="5">
-                                赞成
+                                {{ subgroupVote.yesWord }}
                             </el-col>
                         </el-row>
                         <div v-for="voter in subgroupVote.voterList" style="margin: 10px;">
@@ -117,7 +117,7 @@
                                 </el-icon>
                             </el-col>
                             <el-col :span="5">
-                                反对
+                                {{ subgroupVote.noWord }}
                             </el-col>
                         </el-row>
                         <div v-for="voter in subgroupVote.voterList" style="margin: 10px;">
@@ -139,11 +139,11 @@
                 <el-row justify="center" style="margin-top: 20px;">
                     <el-col :span="8" style="display: flex; justify-content: center;">
                         <el-button type="primary" :disabled="isDisabled(subgroupVote.voterList)"
-                            @click="voteYes(subgroupVote.id)">赞成</el-button>
+                            @click="voteYes(subgroupVote.id)">{{ subgroupVote.yesWord }}</el-button>
                     </el-col>
                     <el-col :span="8" style="display: flex; justify-content: center;">
                         <el-button type="danger" :disabled="isDisabled(subgroupVote.voterList)"
-                            @click="voteNo(subgroupVote.id)">反对</el-button>
+                            @click="voteNo(subgroupVote.id)">{{ subgroupVote.noWord }}</el-button>
                     </el-col>
                 </el-row>
             </el-card>
@@ -222,6 +222,22 @@
                     <el-input v-model="this.newVoteDescription" type="textarea"></el-input>
                 </el-col>
             </el-row>
+            <el-row justify="center" style="width: 70%; margin-bottom: 20px;">
+                <el-col :span="6">
+                    赞成描述：
+                </el-col>
+                <el-col :span="18">
+                    <el-input v-model="this.newYesWord"></el-input>
+                </el-col>
+            </el-row>
+            <el-row justify="center" style="width: 70%; margin-bottom: 20px;">
+                <el-col :span="6">
+                    反对描述：
+                </el-col>
+                <el-col :span="18">
+                    <el-input v-model="this.newNoWord"></el-input>
+                </el-col>
+            </el-row>
             <el-row justify="center" style="width: 100%;">
                 <el-col :span="7" style="display: flex; justify-content: center;">
                     <el-button type="primary" @click="onUpdateSubgroupVote">确认</el-button>
@@ -256,7 +272,9 @@ export default {
                 voter: []
             },
             subgroupMember: [],
-            groupId: null
+            groupId: null,
+            newYesWord: null,
+            newNoWord: null
         }
     },
     async mounted() {
@@ -366,17 +384,23 @@ export default {
             this.selectedIndex = index
             this.newVoteName = this.subgroupVoteList[index].name
             this.newVoteDescription = this.subgroupVoteList[index].description
+            this.newYesWord = this.subgroupVoteList[index].yesWord
+            this.newNoWord = this.subgroupVoteList[index].noWord
             this.changeSubgroupVoteDialogVisible = true
         },
         beforeChangeSubgroupVoteDialogClose() {
             this.selectedIndex = null
             this.newVoteName = null
             this.newVoteDescription = null
+            this.newYesWord = null
+            this.newNoWord = null
             this.changeSubgroupVoteDialogVisible = false
         },
         async onUpdateSubgroupVote() {
             this.subgroupVoteList[this.selectedIndex].name = this.newVoteName
             this.subgroupVoteList[this.selectedIndex].description = this.newVoteDescription
+            this.subgroupVoteList[this.selectedIndex].yesWord = this.newYesWord
+            this.subgroupVoteList[this.selectedIndex].noWord = this.newNoWord
             const { data: res } = await this.$http.put('/subgroup/updateSubgroupVote', this.subgroupVoteList[this.selectedIndex])
             if (res.code === 1) {
                 ElMessage({
@@ -396,6 +420,8 @@ export default {
         onCancelUpdateSubgroupVote() {
             this.newVoteName = this.subgroupVoteList[this.selectedIndex].name
             this.newVoteDescription = this.subgroupVoteList[this.selectedIndex].description
+            this.newYesWord = this.subgroupVoteList[index].yesWord
+            this.newNoWord = this.subgroupVoteList[index].noWord
         },
         beforeCreateSubgroupVoteDialogClose() {
             this.onCancelCreateSubgroupVote()
