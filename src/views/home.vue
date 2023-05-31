@@ -119,7 +119,8 @@
                                                     {{ following.username }}
                                                 </el-col>
                                                 <el-col :span="3">
-                                                    <el-button type="danger" @click="deleteFollow(following.id)">取消关注</el-button>
+                                                    <el-button type="danger"
+                                                        @click="deleteFollow(following.id)">取消关注</el-button>
                                                 </el-col>
                                             </el-row>
                                         </el-card>
@@ -540,7 +541,7 @@ export default {
 .block {
     margin: 20px;
     padding: 20px;
-     
+
 }
 
 .favouriteList {

@@ -51,8 +51,18 @@ export default {
                 password: null
             },
             registerFormRules: {
-                username: [{ required: true, pattern: /^[a-zA-Z][a-zA-Z0-9_]{5,17}$/, message: '6-18位字母、数字、下划线', trigger: 'blur' }],
-                password: [{ required: true, pattern: /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$)([^\u4e00-\u9fa5\s]){6,18}$/, message: '6-18位字母、数字、符号，至少两种', trigger: 'blur' }],
+                username: [{
+                    required: true,
+                    pattern: /^[a-zA-Z][a-zA-Z0-9_]{5,17}$/,
+                    message: '6-18位字母、数字、下划线',
+                    trigger: 'blur'
+                }],
+                password: [{
+                    required: true,
+                    pattern: /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$)([^\u4e00-\u9fa5\s]){6,18}$/,
+                    message: '6-18位字母、数字、符号，至少两种',
+                    trigger: 'blur'
+                }],
                 repassword: [{
                     required: true,
                     validator: (rule, value, callback) => {

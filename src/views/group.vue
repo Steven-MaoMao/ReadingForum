@@ -321,7 +321,7 @@
                                 <el-row>
                                     <el-col>
                                         <el-button type="primary" size="large" style="margin: 10px;"
-                                            @click="this.onGroupFavouriteDialogVisible">
+                                            @click="this.onGroupFavouriteDialogVisible" :disabled="!this.groupManager">
                                             <el-icon>
                                                 <Plus />
                                             </el-icon>
